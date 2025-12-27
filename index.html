@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>熟語テスト（重複なしランダム）</title>
+  <title>英検準２級 単語テスト（重複なしランダム）</title>
 
   <style>
     /* =========================================================
-       基本（ライト）
+       基本（ライト） ※熟語アプリの見た目・配置に合わせる
      ========================================================= */
-    body {
+    body{
       font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
       margin: 0;
       padding: 20px;
@@ -18,7 +18,7 @@
       transition: background .2s ease, color .2s ease;
     }
 
-    .card {
+    .card{
       max-width: 820px;
       margin: 0 auto;
       padding: 18px;
@@ -28,7 +28,7 @@
       transition: background .2s ease, border-color .2s ease;
     }
 
-    .top {
+    .top{
       display:flex;
       justify-content:space-between;
       align-items:center;
@@ -36,7 +36,7 @@
       flex-wrap:wrap;
     }
 
-    .badge {
+    .badge{
       font-size: 14px;
       padding: 6px 10px;
       border-radius: 999px;
@@ -45,7 +45,7 @@
       transition: background .2s ease, border-color .2s ease, color .2s ease;
     }
 
-    .row {
+    .row{
       display:flex;
       gap:10px;
       flex-wrap:wrap;
@@ -53,29 +53,29 @@
       margin-top: 10px;
     }
 
-    .phrase {
-      font-size: 34px;
+    .word{
+      font-size: 44px;
       font-weight: 800;
       margin: 18px 0 10px;
-      line-height: 1.15;
+      line-height: 1.1;
       word-break: break-word;
     }
 
-    .meaning {
-      font-size: 24px;
+    .meaning{
+      font-size: 28px;
       margin: 10px 0 0;
-      min-height: 36px;
+      min-height: 40px;
       word-break: break-word;
     }
 
-    .btns {
+    .btns{
       display:flex;
       gap:10px;
       margin-top: 16px;
       flex-wrap:wrap;
     }
 
-    button {
+    button{
       font-size: 18px;
       padding: 12px 14px;
       border-radius: 12px;
@@ -85,15 +85,15 @@
       cursor: pointer;
       transition: background .2s ease, border-color .2s ease, color .2s ease;
     }
-    button:active { transform: translateY(1px); }
+    button:active{ transform: translateY(1px); }
 
-    .primary { font-weight: 800; }
-    .danger { border-color:#f2c; }
-    .toggle { border-color:#88c; }
-    .small { font-size: 14px; padding: 10px 12px; border-radius: 12px; }
+    .primary{ font-weight: 800; }
+    .danger{ border-color:#f2c; }
+    .toggle{ border-color:#88c; }
+    .small{ font-size: 14px; padding: 10px 12px; border-radius: 12px; }
 
     /* 間違いチェック（答え合わせ時だけ表示） */
-    .missBox {
+    .missBox{
       display:none;
       margin-top: 12px;
       padding: 10px 12px;
@@ -104,40 +104,33 @@
       flex-wrap: wrap;
       transition: background .2s ease, border-color .2s ease, color .2s ease;
     }
-    .missBox.show { display:flex; }
-    .missBox input { width: 22px; height: 22px; }
-    .missBox .label { font-size: 16px; user-select: none; }
+    .missBox.show{ display:flex; }
+    .missBox input{ width: 22px; height: 22px; }
+    .missBox .label{ font-size: 16px; user-select: none; }
 
     /* =========================================================
        ダークモード（bodyに .dark を付ける）
      ========================================================= */
-    body.dark {
+    body.dark{
       background: #0f1115;
       color: #e9e9ea;
     }
-
-    body.dark .card {
+    body.dark .card{
       background: #171a21;
       border-color: #2a2f3a;
     }
-
-    body.dark .badge {
+    body.dark .badge{
       border-color: #2a2f3a;
       background: rgba(255,255,255,0.03);
       color: #d6d6d8;
     }
-
-    body.dark button {
+    body.dark button{
       background: #1f2430;
       border-color: #2a2f3a;
       color: #e9e9ea;
     }
-
-    body.dark button:hover {
-      background: #252b3a;
-    }
-
-    body.dark .missBox {
+    body.dark button:hover{ background: #252b3a; }
+    body.dark .missBox{
       border-color: #2a2f3a;
       background: rgba(255,255,255,0.03);
     }
@@ -148,10 +141,10 @@
   <div class="card">
     <div class="top">
       <div class="badge" id="progress">0 / 0</div>
-      <div class="badge" id="mode">熟語：英→日</div>
+      <div class="badge" id="mode">単語：英→日</div>
     </div>
 
-    <!-- 発音ON/OFF + テーマ切替（ここに追加） -->
+    <!-- 発音ON/OFF + テーマ切替（熟語アプリと同じ位置） -->
     <div class="row">
       <button class="toggle small" id="audioToggle">🔊 発音：ON</button>
       <button class="toggle small" id="themeToggle">🌙 ダーク</button>
@@ -167,13 +160,13 @@
       <button class="small danger" id="clearWrongBtn" type="button">間違いリストを消す</button>
     </div>
 
-    <div class="phrase" id="phrase">（IDIOMSリストを読み込み中…）</div>
+    <div class="word" id="word">（VOCABリストを読み込み中…）</div>
     <div class="meaning" id="meaning"></div>
 
     <!-- ★答え合わせ表示中だけ出る：間違えたチェック -->
     <div class="missBox" id="missBox">
       <input type="checkbox" id="missToggle" />
-      <label class="label" for="missToggle">この熟語は間違えた（間違いリストに入れる）</label>
+      <label class="label" for="missToggle">この単語は間違えた（間違いリストに入れる）</label>
     </div>
 
     <!-- 次へ / 発音 / リセット -->
@@ -185,63 +178,711 @@
   </div>
 
 <script>
+/**
+ * ▼単語リスト（650語）
+ * 形式： { en: "apple", ja: "りんご" }
+ */
 const VOCAB = [
-  { en: "～ as well", ja: "～もまた" },
-  { en: "a good deal (of ～)", ja: "かなり多く（の～）" },
-  { en: "a good many ～", ja: "（かなり）多くの～" },
-  { en: "a great deal (of ～)", ja: "非常に多く（の～）" },
+  { en: "abandon", ja: "放棄する" },
+  { en: "ability", ja: "能力" },
+  { en: "absorb", ja: "吸収する" },
+  { en: "accept", ja: "受け入れる" },
+  { en: "access", ja: "利用する／入手する" },
+  { en: "accident", ja: "事故" },
+  { en: "account", ja: "説明／口座" },
+  { en: "accurate", ja: "正確な" },
+  { en: "accuse", ja: "非難する" },
+  { en: "achieve", ja: "達成する" },
+  { en: "active", ja: "活発な" },
+  { en: "activity", ja: "活動" },
+  { en: "actually", ja: "実は" },
+  { en: "adapt", ja: "適応する" },
+  { en: "adjust", ja: "調整する" },
+  { en: "admire", ja: "感心する" },
+  { en: "admit", ja: "認める" },
+  { en: "adopt", ja: "採用する" },
+  { en: "advance", ja: "進歩／前進" },
+  { en: "advantage", ja: "利点" },
+  { en: "advertise", ja: "宣伝する" },
+  { en: "affect", ja: "影響を与える" },
+  { en: "afford", ja: "〜する余裕がある" },
+  { en: "affordable", ja: "手頃な" },
+  { en: "agree", ja: "同意する" },
+  { en: "agriculture", ja: "農業" },
+  { en: "aim", ja: "目的" },
+  { en: "allow", ja: "許可する" },
+  { en: "allow for ～", ja: "〜を考慮に入れる" },
+  { en: "announcement", ja: "発表" },
+  { en: "answer", ja: "答える" },
+  { en: "anxiety", ja: "不安" },
+  { en: "apologize", ja: "謝る" },
+  { en: "apparent", ja: "明らかな" },
+  { en: "application", ja: "申し込み" },
+  { en: "apply for ～", ja: "〜に申し込む" },
+  { en: "appointment", ja: "予約／約束" },
+  { en: "appreciate", ja: "感謝する／正しく理解する" },
+  { en: "approach", ja: "接近する／方法" },
+  { en: "appropriate", ja: "適切な" },
+  { en: "area", ja: "地域" },
+  { en: "argument", ja: "議論" },
+  { en: "arrange", ja: "手配する" },
+  { en: "arrive", ja: "到着する" },
+  { en: "aspect", ja: "側面" },
+  { en: "assist", ja: "手伝う" },
+  { en: "assist with ～", ja: "〜を手伝う" },
+  { en: "assume", ja: "仮定する" },
+  { en: "attempt", ja: "試みる" },
+  { en: "attend", ja: "出席する" },
+  { en: "attend to ～", ja: "〜に注意する" },
+  { en: "attitude", ja: "態度" },
+  { en: "attract", ja: "引きつける" },
+  { en: "attract attention", ja: "注目を集める" },
+  { en: "audience", ja: "観客" },
+  { en: "author", ja: "著者" },
+  { en: "authority", ja: "権威" },
+  { en: "average", ja: "平均／平均の" },
+  { en: "avoid", ja: "避ける" },
+  { en: "avoid ～ing", ja: "～するのを避ける" },
+  { en: "award", ja: "賞" },
+  { en: "aware", ja: "気づいている" },
+  { en: "aware of～", ja: "〜に気づいている" },
+  { en: "background", ja: "背景" },
+  { en: "balance", ja: "バランス" },
+  { en: "barrier", ja: "障害" },
+  { en: "base on ～", ja: "〜に基づく" },
+  { en: "behavior", ja: "行動／振る舞い" },
+  { en: "belief", ja: "信念" },
+  { en: "belong to ～", ja: "〜に属する" },
+  { en: "benefit", ja: "利益" },
+  { en: "benefit from ～", ja: "〜から利益を得る" },
+  { en: "border", ja: "国境" },
+  { en: "borrow", ja: "借りる" },
+  { en: "budget", ja: "予算" },
+  { en: "burden", ja: "負担" },
+  { en: "business", ja: "事業" },
+  { en: "busy", ja: "忙しい" },
+  { en: "calculate", ja: "計算する" },
+  { en: "campaign", ja: "運動" },
+  { en: "cancel", ja: "中止する" },
+  { en: "candidate", ja: "候補者" },
+  { en: "capacity", ja: "能力／容量" },
+  { en: "career", ja: "職業" },
+  { en: "careful", ja: "注意深い" },
+  { en: "cause", ja: "原因／原因となる" },
+  { en: "ceremony", ja: "式典" },
+  { en: "challenge", ja: "課題" },
+  { en: "chance", ja: "機会" },
+  { en: "character", ja: "性格" },
+  { en: "check", ja: "確認する" },
+  { en: "choice", ja: "選択" },
+  { en: "choose", ja: "選ぶ" },
+  { en: "circumstance", ja: "状況" },
+  { en: "citizen", ja: "市民" },
+  { en: "claim", ja: "主張する" },
+  { en: "clarify", ja: "明確にする" },
+  { en: "clerk", ja: "店員" },
+  { en: "climate", ja: "気候" },
+  { en: "climate action", ja: "気候対策" },
+  { en: "climate change", ja: "気候変動" },
+  { en: "colleague", ja: "同僚" },
+  { en: "combine", ja: "結合する" },
+  { en: "combine with ～", ja: "〜と結合する" },
+  { en: "comment", ja: "コメント／コメントする" },
+  { en: "comment on ～", ja: "〜についてコメントする" },
+  { en: "commercial", ja: "商業の" },
+  { en: "commit", ja: "犯す／専念する" },
+  { en: "common", ja: "一般的な" },
+  { en: "common sense", ja: "常識" },
+  { en: "communicate with ～", ja: "〜と意思疎通する" },
+  { en: "communication", ja: "交流" },
+  { en: "community", ja: "地域社会" },
+  { en: "company", ja: "会社" },
+  { en: "compare", ja: "比較する" },
+  { en: "competition", ja: "競争" },
+  { en: "complain", ja: "不満を言う" },
+  { en: "complaint", ja: "苦情" },
+  { en: "complex", ja: "複雑な" },
+  { en: "concentrate", ja: "集中する" },
+  { en: "concentrate on ～", ja: "〜に集中する" },
+  { en: "conclusion", ja: "結論" },
+  { en: "condition", ja: "状態" },
+  { en: "conduct", ja: "行う" },
+  { en: "confidence", ja: "自信" },
+  { en: "conflict", ja: "対立" },
+  { en: "connect", ja: "つなぐ" },
+  { en: "connect to ～", ja: "〜につながる" },
+  { en: "connection", ja: "つながり" },
+  { en: "conscious", ja: "意識している" },
+  { en: "consider", ja: "考慮する" },
+  { en: "consider ～ing", ja: "～することを考える" },
+  { en: "consume", ja: "消費する" },
+  { en: "consume energy", ja: "エネルギーを消費する" },
+  { en: "contact", ja: "連絡" },
+  { en: "continue", ja: "続ける" },
+  { en: "contribute", ja: "貢献する" },
+  { en: "contribute to ～", ja: "〜に貢献する" },
+  { en: "contribution", ja: "貢献" },
+  { en: "control", ja: "管理する" },
+  { en: "convenience", ja: "便利さ" },
+  { en: "convenient", ja: "便利な" },
+  { en: "cope with ～", ja: "〜に対処する" },
+  { en: "correct", ja: "正しい／訂正する" },
+  { en: "cost", ja: "費用" },
+  { en: "courage", ja: "勇気" },
+  { en: "create", ja: "創造する" },
+  { en: "creative", ja: "創造的な" },
+  { en: "critical", ja: "批判的な／重要な" },
+  { en: "crowd", ja: "群衆／混雑" },
+  { en: "crowded", ja: "混雑した" },
+  { en: "cultural difference", ja: "文化の違い" },
+  { en: "culture", ja: "文化" },
+  { en: "culture shock", ja: "文化的衝撃" },
+  { en: "curiosity", ja: "好奇心" },
+  { en: "custom", ja: "習慣" },
+  { en: "customer", ja: "客" },
+  { en: "daily", ja: "毎日の" },
+  { en: "damage", ja: "損害" },
+  { en: "dangerous", ja: "危険な" },
+  { en: "debate", ja: "議論" },
+  { en: "decide", ja: "決める" },
+  { en: "decision", ja: "決定" },
+  { en: "decrease", ja: "減少する" },
+  { en: "delay", ja: "遅れ／遅らせる" },
+  { en: "deliver", ja: "配達する" },
+  { en: "demand", ja: "要求／要求する" },
+  { en: "deny", ja: "否定する" },
+  { en: "depend", ja: "依存する" },
+  { en: "depend on ～", ja: "〜に依存する" },
+  { en: "depression", ja: "不況／憂うつ" },
+  { en: "describe", ja: "描写する" },
+  { en: "describe ～ as …", ja: "〜を…と表現する" },
+  { en: "desire", ja: "欲求" },
+  { en: "destination", ja: "目的地" },
+  { en: "destroy", ja: "破壊する" },
+  { en: "detail", ja: "詳細" },
+  { en: "determine", ja: "決定する" },
+  { en: "determine to ～", ja: "〜すると決意する" },
+  { en: "develop", ja: "発展させる" },
+  { en: "device", ja: "装置" },
+  { en: "devote ～ to …", ja: "〜を…に捧げる" },
+  { en: "difference", ja: "違い" },
+  { en: "different", ja: "異なる" },
+  { en: "difficult", ja: "難しい" },
+  { en: "direction", ja: "方向" },
+  { en: "disadvantage", ja: "欠点" },
+  { en: "disagree", ja: "反対する" },
+  { en: "disaster", ja: "災害" },
+  { en: "disaster area", ja: "被災地" },
+  { en: "discover", ja: "発見する" },
+  { en: "discuss", ja: "議論する" },
+  { en: "distance", ja: "距離" },
+  { en: "distribute", ja: "分配する" },
+  { en: "disturb", ja: "妨げる" },
+  { en: "diverse", ja: "多様な" },
+  { en: "domestic", ja: "国内の" },
+  { en: "doubt", ja: "疑い" },
+  { en: "duty", ja: "義務" },
+  { en: "early", ja: "早い" },
+  { en: "earn", ja: "稼ぐ" },
+  { en: "easy", ja: "簡単な" },
+  { en: "economic growth", ja: "経済成長" },
+  { en: "economy", ja: "経済" },
+  { en: "editor", ja: "編集者" },
+  { en: "educate", ja: "教育する" },
+  { en: "education", ja: "教育" },
+  { en: "educational system", ja: "教育制度" },
+  { en: "effect", ja: "効果" },
+  { en: "effective", ja: "効果的な" },
+  { en: "effective method", ja: "効果的な方法" },
+  { en: "effort", ja: "努力" },
+  { en: "effort to ～", ja: "〜しようとする努力" },
+  { en: "elderly people", ja: "高齢者" },
+  { en: "election", ja: "選挙" },
+  { en: "element", ja: "要素" },
+  { en: "emergency", ja: "緊急事態" },
+  { en: "emergency room", ja: "救急室" },
+  { en: "emotion", ja: "感情" },
+  { en: "employee", ja: "従業員" },
+  { en: "employer", ja: "雇用主" },
+  { en: "enable", ja: "可能にする" },
+  { en: "encourage", ja: "励ます" },
+  { en: "encourage ～ to …", ja: "〜に…するよう励ます" },
+  { en: "energy", ja: "エネルギー" },
+  { en: "energy consumption", ja: "エネルギー消費" },
+  { en: "engage", ja: "従事する" },
+  { en: "enough", ja: "十分な" },
+  { en: "entrance", ja: "入り口" },
+  { en: "environment", ja: "環境" },
+  { en: "environmental issue", ja: "環境問題" },
+  { en: "environmental protection", ja: "環境保護" },
+  { en: "equal", ja: "平等な" },
+  { en: "equipment", ja: "設備" },
+  { en: "error", ja: "誤り" },
+  { en: "especially", ja: "特に" },
+  { en: "essential", ja: "必要不可欠な" },
+  { en: "essential for ～", ja: "〜に不可欠な" },
+  { en: "estimate", ja: "見積もる" },
+  { en: "estimate the cost", ja: "費用を見積もる" },
+  { en: "ethical", ja: "倫理的な" },
+  { en: "evaluate", ja: "評価する" },
+  { en: "event", ja: "出来事" },
+  { en: "evidence", ja: "証拠" },
+  { en: "evidence of ～", ja: "〜の証拠" },
+  { en: "evolve", ja: "進化する" },
+  { en: "examine", ja: "調べる" },
+  { en: "example", ja: "例" },
+  { en: "exchange", ja: "交換する" },
+  { en: "exist", ja: "存在する" },
+  { en: "exist in ～", ja: "〜に存在する" },
+  { en: "expand", ja: "拡大する" },
+  { en: "expand rapidly", ja: "急速に拡大する" },
+  { en: "expect", ja: "期待する" },
+  { en: "expense", ja: "費用" },
+  { en: "experience", ja: "経験" },
+  { en: "experiment", ja: "実験" },
+  { en: "expert", ja: "専門家" },
+  { en: "explain", ja: "説明する" },
+  { en: "explain why ～", ja: "なぜ〜か説明する" },
+  { en: "explore", ja: "探索する" },
+  { en: "expose ～ to …", ja: "〜を…にさらす" },
+  { en: "factor", ja: "要因" },
+  { en: "factor in ～", ja: "〜を考慮に入れる" },
+  { en: "factory", ja: "工場" },
+  { en: "fail to ～", ja: "〜できない" },
+  { en: "failure", ja: "失敗" },
+  { en: "fair treatment", ja: "公正な扱い" },
+  { en: "famous", ja: "有名な" },
+  { en: "feature", ja: "特徴／～を特徴とする" },
+  { en: "figure out ～", ja: "〜を理解する" },
+  { en: "finally", ja: "最終的に" },
+  { en: "financial problem", ja: "財政問題" },
+  { en: "focus", ja: "集中する" },
+  { en: "focus on ～", ja: "〜に集中する" },
+  { en: "force", ja: "力／強制する" },
+  { en: "force ～ to …", ja: "〜に…させる" },
+  { en: "former", ja: "前の／前者" },
+  { en: "free", ja: "自由な" },
+  { en: "function", ja: "機能" },
+  { en: "function properly", ja: "正常に機能する" },
+  { en: "future", ja: "将来" },
+  { en: "gain experience", ja: "経験を積む" },
+  { en: "generate", ja: "生み出す" },
+  { en: "generation", ja: "世代" },
+  { en: "global", ja: "世界的な" },
+  { en: "global society", ja: "世界社会" },
+  { en: "global warming", ja: "地球温暖化" },
+  { en: "goal", ja: "目標" },
+  { en: "government", ja: "政府" },
+  { en: "gradually", ja: "徐々に" },
+  { en: "guest", ja: "客" },
+  { en: "guide", ja: "案内人" },
+  { en: "habit", ja: "習慣" },
+  { en: "handle", ja: "～を扱う" },
+  { en: "harm", ja: "～に害を与える" },
+  { en: "have access to ～", ja: "〜を利用できる" },
+  { en: "health", ja: "健康" },
+  { en: "healthy", ja: "健康な" },
+  { en: "hesitate", ja: "ためらう" },
+  { en: "hesitate to ～", ja: "〜するのをためらう" },
+  { en: "highlight", ja: "強調する" },
+  { en: "human", ja: "人間の" },
+  { en: "human behavior", ja: "人間行動" },
+  { en: "human rights", ja: "人権" },
+  { en: "identify", ja: "識別する／身元／正体" },
+  { en: "ignore", ja: "無視する" },
+  { en: "immediately", ja: "すぐに" },
+  { en: "impact", ja: "影響" },
+  { en: "impact on ～", ja: "〜への影響" },
+  { en: "important", ja: "重要な" },
+  { en: "improve", ja: "改善する" },
+  { en: "improve quality", ja: "質を向上させる" },
+  { en: "include", ja: "含む" },
+  { en: "include ～ as …", ja: "〜を…として含む" },
+  { en: "income", ja: "収入" },
+  { en: "increase", ja: "増える／増やす" },
+  { en: "increase sharply", ja: "急増する" },
+  { en: "individual", ja: "個人" },
+  { en: "industry", ja: "産業" },
+  { en: "influence", ja: "影響／影響を与える" },
+  { en: "influence decision", ja: "判断に影響する" },
+  { en: "inform", ja: "知らせる" },
+  { en: "inform ～ of …", ja: "〜に…を知らせる" },
+  { en: "information", ja: "情報" },
+  { en: "injure", ja: "傷つける" },
+  { en: "injury", ja: "けが" },
+  { en: "injury caused by ～", ja: "〜によるけが" },
+  { en: "insist", ja: "主張する" },
+  { en: "inspire", ja: "～を鼓舞する" },
+  { en: "install", ja: "設置する" },
+  { en: "install software", ja: "ソフトを導入する" },
+  { en: "instance", ja: "例" },
+  { en: "instruction", ja: "指示" },
+  { en: "intend", ja: "意図する" },
+  { en: "intend to ～", ja: "〜するつもりだ" },
+  { en: "interact with ～", ja: "〜と交流する" },
+  { en: "international", ja: "国際的な" },
+  { en: "interrupt", ja: "妨げる" },
+  { en: "interview", ja: "面接" },
+  { en: "introduce", ja: "紹介する" },
+  { en: "involve", ja: "含む／関与させる" },
+  { en: "issue", ja: "問題" },
+  { en: "issue concerning ～", ja: "〜に関する問題" },
+  { en: "item", ja: "品目" },
+  { en: "judge", ja: "判断する" },
+  { en: "judge from ～", ja: "〜から判断する" },
+  { en: "knowledge", ja: "知識" },
+  { en: "labor", ja: "労働" },
+  { en: "lack", ja: "不足" },
+  { en: "lack of ～", ja: "〜の不足" },
+  { en: "language", ja: "言語" },
+  { en: "late", ja: "遅い" },
+  { en: "law", ja: "法律" },
+  { en: "lead to ～", ja: "〜につながる" },
+  { en: "legal", ja: "法的な" },
+  { en: "legal system", ja: "法制度" },
+  { en: "lend", ja: "貸す" },
+  { en: "level", ja: "水準" },
+  { en: "limit", ja: "制限" },
+  { en: "limit access", ja: "制限する" },
+  { en: "link A to B", ja: "AをBに結びつける" },
+  { en: "local", ja: "地域の" },
+  { en: "local community", ja: "地域社会" },
+  { en: "locate", ja: "位置する" },
+  { en: "location", ja: "場所" },
+  { en: "loss", ja: "損失" },
+  { en: "luggage", ja: "荷物／スーツケース" },
+  { en: "maintain", ja: "維持する" },
+  { en: "maintain balance", ja: "バランスを保つ" },
+  { en: "major cause", ja: "主な原因" },
+  { en: "manage", ja: "管理する" },
+  { en: "manage to ～", ja: "なんとか〜する" },
+  { en: "market", ja: "市場" },
+  { en: "material", ja: "材料" },
+  { en: "measure", ja: "測定する" },
+  { en: "measure progress", ja: "進歩を測る" },
+  { en: "media coverage", ja: "メディア報道" },
+  { en: "medical care", ja: "医療" },
+  { en: "mental", ja: "精神の" },
+  { en: "mental health", ja: "心の健康" },
+  { en: "mention", ja: "言及する" },
+  { en: "method", ja: "方法" },
+  { en: "method of ～", ja: "〜の方法" },
+  { en: "minor", ja: "小さな" },
+  { en: "minor problem", ja: "小さな問題" },
+  { en: "miss", ja: "逃す" },
+  { en: "miss the chance", ja: "機会を逃す" },
+  { en: "mistake", ja: "間違い" },
+  { en: "modern", ja: "現代の" },
+  { en: "modify", ja: "修正する" },
+  { en: "motivate", ja: "動機づける" },
+  { en: "motivate ～ to …", ja: "〜を…する気にさせる" },
+  { en: "move forward", ja: "前進する" },
+  { en: "movement", ja: "運動" },
+  { en: "natural", ja: "自然の" },
+  { en: "necessary", ja: "必要な" },
+  { en: "negative", ja: "否定的な" },
+  { en: "negative effect", ja: "悪影響" },
+  { en: "neighborhood", ja: "近所" },
+  { en: "notice", ja: "通知／～に気づく" },
+  { en: "noticeable", ja: "目立つ" },
+  { en: "object to ～", ja: "〜に反対する" },
+  { en: "observe", ja: "観察する" },
+  { en: "observe carefully", ja: "注意深く観察する" },
+  { en: "occur", ja: "起こる" },
+  { en: "occur suddenly", ja: "突然起こる" },
+  { en: "offer", ja: "提供する" },
+  { en: "offer advice", ja: "助言を提供する" },
+  { en: "operate", ja: "操作する" },
+  { en: "operate machinery", ja: "機械を操作する" },
+  { en: "opinion", ja: "意見" },
+  { en: "opportunity", ja: "機会" },
+  { en: "opportunity to ～", ja: "〜する機会" },
+  { en: "option", ja: "選択肢" },
+  { en: "order", ja: "注文" },
+  { en: "ordinary", ja: "普通の" },
+  { en: "ordinary people", ja: "一般の人々" },
+  { en: "organization", ja: "組織" },
+  { en: "organize", ja: "組織する" },
+  { en: "original", ja: "元の" },
+  { en: "original idea", ja: "独創的な考え" },
+  { en: "overcome", ja: "克服する" },
+  { en: "overcome difficulty", ja: "困難を克服する" },
+  { en: "participate", ja: "参加する" },
+  { en: "participate in", ja: "〜に参加する" },
+  { en: "passenger", ja: "乗客" },
+  { en: "past", ja: "過去の" },
+  { en: "payment", ja: "支払い" },
+  { en: "perform", ja: "行う" },
+  { en: "perform task", ja: "作業を行う" },
+  { en: "performance", ja: "公演／性能" },
+  { en: "permission", ja: "許可" },
+  { en: "permit", ja: "許可する" },
+  { en: "permit ～ to …", ja: "〜に…することを許す" },
+  { en: "personal", ja: "個人的な" },
+  { en: "physical", ja: "身体の" },
+  { en: "physical condition", ja: "身体状態" },
+  { en: "policy", ja: "方針" },
+  { en: "policy change", ja: "方針変更" },
+  { en: "pollution", ja: "汚染" },
+  { en: "popular", ja: "人気の" },
+  { en: "population", ja: "人口" },
+  { en: "position", ja: "立場" },
+  { en: "positive", ja: "前向きな" },
+  { en: "positive attitude", ja: "前向きな態度" },
+  { en: "possibility", ja: "可能性" },
+  { en: "possible", ja: "可能な" },
+  { en: "potential", ja: "可能性" },
+  { en: "potential risk", ja: "潜在的危険" },
+  { en: "predict", ja: "予測する" },
+  { en: "predict future", ja: "将来を予測する" },
+  { en: "prepare", ja: "準備する" },
+  { en: "pressure", ja: "圧力" },
+  { en: "prevent", ja: "防ぐ" },
+  { en: "prevent accident", ja: "事故を防ぐ" },
+  { en: "price", ja: "価格" },
+  { en: "priority", ja: "優先" },
+  { en: "private", ja: "私的な" },
+  { en: "private company", ja: "民間企業" },
+  { en: "probably", ja: "おそらく" },
+  { en: "problem", ja: "問題" },
+  { en: "process", ja: "過程" },
+  { en: "process of ～", ja: "〜の過程" },
+  { en: "produce", ja: "生産する" },
+  { en: "produce waste", ja: "廃棄物を出す" },
+  { en: "product", ja: "製品" },
+  { en: "progress", ja: "進歩" },
+  { en: "project", ja: "計画" },
+  { en: "promise", ja: "約束／約束する" },
+  { en: "promote", ja: "促進する" },
+  { en: "promote health", ja: "健康を促進する" },
+  { en: "protect", ja: "守る" },
+  { en: "protect environment", ja: "環境を守る" },
+  { en: "provide", ja: "提供する" },
+  { en: "provide service", ja: "サービスを提供する" },
+  { en: "public", ja: "公共の" },
+  { en: "public opinion", ja: "世論" },
+  { en: "public transportation", ja: "公共交通機関" },
+  { en: "purpose", ja: "目的" },
+  { en: "quality", ja: "質" },
+  { en: "react", ja: "反応する" },
+  { en: "react quickly", ja: "素早く反応する" },
+  { en: "reaction", ja: "反応" },
+  { en: "ready", ja: "準備ができた" },
+  { en: "reason", ja: "理由" },
+  { en: "receipt", ja: "領収書／レシート" },
+  { en: "recent", ja: "最近の" },
+  { en: "recently", ja: "最近" },
+  { en: "recognize", ja: "認識する" },
+  { en: "recommend", ja: "勧める" },
+  { en: "recover", ja: "回復する" },
+  { en: "recover from ～", ja: "〜から回復する" },
+  { en: "recycle", ja: "再利用する" },
+  { en: "reduce", ja: "減らす" },
+  { en: "reduces stress", ja: "ストレスを減らす" },
+  { en: "refer to ～", ja: "〜を参照する" },
+  { en: "reflect", ja: "反映する" },
+  { en: "reflect opinion", ja: "意見を反映する" },
+  { en: "refuse", ja: "拒否する" },
+  { en: "refuse request", ja: "要求を拒否する" },
+  { en: "region", ja: "地域" },
+  { en: "relate", ja: "関係する" },
+  { en: "relate to ～", ja: "〜に関係する" },
+  { en: "relationship", ja: "関係" },
+  { en: "release", ja: "解放する" },
+  { en: "release stress", ja: "ストレスを発散する" },
+  { en: "rely on ～", ja: "〜に頼る" },
+  { en: "remove", ja: "取り除く" },
+  { en: "remove waste", ja: "ごみを取り除く" },
+  { en: "repair", ja: "修理する" },
+  { en: "replace", ja: "取り替える／置き換える" },
+  { en: "replace old", ja: "古い制度を置き換える" },
+  { en: "reply", ja: "返事／返事をする" },
+  { en: "report", ja: "報告する" },
+  { en: "request", ja: "要求／要求する" },
+  { en: "require", ja: "必要とする" },
+  { en: "require effort", ja: "努力を要する" },
+  { en: "research", ja: "研究" },
+  { en: "reservation", ja: "予約" },
+  { en: "resource", ja: "資源" },
+  { en: "respect", ja: "尊敬" },
+  { en: "respond", ja: "反応する" },
+  { en: "respond appropriately", ja: "適切に対応する" },
+  { en: "responsibility", ja: "責任" },
+  { en: "result", ja: "結果" },
+  { en: "result from", ja: "〜から生じる" },
+  { en: "result in ～", ja: "〜という結果になる" },
+  { en: "risk", ja: "危険" },
+  { en: "risk of ～", ja: "〜の危険" },
+  { en: "role", ja: "役割" },
+  { en: "rule", ja: "規則" },
+  { en: "safe", ja: "安全な" },
+  { en: "safety", ja: "安全" },
+  { en: "safety measure", ja: "安全対策" },
+  { en: "satisfy", ja: "満足させる" },
+  { en: "satisfy condition", ja: "条件を満たす" },
+  { en: "save", ja: "節約する" },
+  { en: "schedule", ja: "予定" },
+  { en: "schedule meeting", ja: "会議を予定する" },
+  { en: "search", ja: "探す" },
+  { en: "secure", ja: "安全な／確保する" },
+  { en: "secure safety", ja: "安全を確保する" },
+  { en: "security", ja: "安全" },
+  { en: "select", ja: "選ぶ" },
+  { en: "select candidate", ja: "候補者を選ぶ" },
+  { en: "selection", ja: "選択" },
+  { en: "serious", ja: "深刻な" },
+  { en: "service", ja: "サービス" },
+  { en: "share", ja: "共有する" },
+  { en: "share responsibility", ja: "責任を分担する" },
+  { en: "sick", ja: "病気の" },
+  { en: "similar", ja: "似ている" },
+  { en: "simple", ja: "簡単な" },
+  { en: "situation", ja: "状況" },
+  { en: "skill", ja: "技能" },
+  { en: "social", ja: "社会的な" },
+  { en: "social issue", ja: "社会問題" },
+  { en: "social responsibility", ja: "社会的責任" },
+  { en: "society", ja: "社会" },
+  { en: "solution", ja: "解決策" },
+  { en: "solve", ja: "解決する" },
+  { en: "solve problem", ja: "問題を解決する" },
+  { en: "source", ja: "源" },
+  { en: "special", ja: "特別な" },
+  { en: "spread", ja: "広がる" },
+  { en: "spread information", ja: "情報を広める" },
+  { en: "standard", ja: "基準" },
+  { en: "standard of living", ja: "生活水準" },
+  { en: "strategy", ja: "戦略" },
+  { en: "strategy for ～", ja: "〜の戦略" },
+  { en: "strength", ja: "強さ" },
+  { en: "strengthen", ja: "強める" },
+  { en: "strengthen relationship", ja: "関係を強める" },
+  { en: "stress", ja: "ストレス" },
+  { en: "subway", ja: "地下鉄" },
+  { en: "succeed", ja: "成功する" },
+  { en: "succeed in ～", ja: "〜に成功する" },
+  { en: "success", ja: "成功" },
+  { en: "suggest", ja: "提案する" },
+  { en: "suggestion", ja: "提案" },
+  { en: "supply", ja: "供給する" },
+  { en: "supply energy", ja: "エネルギーを供給する" },
+  { en: "support", ja: "支援／支援する" },
+  { en: "support policy", ja: "政策を支持する" },
+  { en: "survey", ja: "調査" },
+  { en: "survive", ja: "生き残る" },
+  { en: "survive accident", ja: "事故を生き延びる" },
+  { en: "target", ja: "目標" },
+  { en: "target audience", ja: "対象者" },
+  { en: "task", ja: "課題" },
+  { en: "task assigned", ja: "割り当てられた課題" },
+  { en: "technological development", ja: "技術発展" },
+  { en: "technology", ja: "技術" },
+  { en: "temperature", ja: "温度" },
+  { en: "tend", ja: "～する傾向がある" },
+  { en: "tend to ～", ja: "〜する傾向がある" },
+  { en: "test", ja: "試験" },
+  { en: "theory", ja: "理論" },
+  { en: "threaten", ja: "脅かす" },
+  { en: "threaten safety", ja: "安全を脅かす" },
+  { en: "trade", ja: "貿易" },
+  { en: "trade with ～", ja: "〜と貿易する" },
+  { en: "tradition", ja: "伝統" },
+  { en: "traditional", ja: "伝統的な" },
+  { en: "traditional culture", ja: "伝統文化" },
+  { en: "traffic", ja: "交通" },
+  { en: "traffic jam", ja: "交通渋滞" },
+  { en: "training", ja: "訓練" },
+  { en: "transport", ja: "輸送する／交通手段" },
+  { en: "transportation", ja: "交通" },
+  { en: "treat", ja: "扱う" },
+  { en: "treat disease", ja: "病気を治療する" },
+  { en: "trouble", ja: "問題" },
+  { en: "trust", ja: "信頼する" },
+  { en: "trust opinion", ja: "意見を信頼する" },
+  { en: "truth", ja: "真実" },
+  { en: "uncomfortable", ja: "不快な" },
+  { en: "understand", ja: "理解する" },
+  { en: "update", ja: "更新する" },
+  { en: "useful", ja: "役に立つ" },
+  { en: "value", ja: "価値" },
+  { en: "value experience", ja: "経験を重視する" },
+  { en: "variety", ja: "多様性" },
+  { en: "vary", ja: "変化する" },
+  { en: "vary depending on ～", ja: "〜によって異なる" },
+  { en: "victim", ja: "被害者" },
+  { en: "volunteer", ja: "ボランティア" },
+  { en: "volunteer activity", ja: "ボランティア活動" },
+  { en: "warn", ja: "警告する" },
+  { en: "warn ～ about …", ja: "〜に…を警告する" },
+  { en: "warning", ja: "警告" },
+  { en: "waste", ja: "無駄／無駄にする" },
+  { en: "waste resources", ja: "資源を無駄にする" },
+  { en: "wealth", ja: "富" },
+  { en: "weather", ja: "天気" },
+  { en: "weigh", ja: "重さを量る" },
+  { en: "weigh option", ja: "選択肢を検討する" },
+  { en: "welfare", ja: "福祉" },
+  { en: "well-known", ja: "有名な" },
+  { en: "withdraw", ja: "撤退する" },
+  { en: "wonder", ja: "不思議に思う" },
+  { en: "work-life balance", ja: "仕事と生活の調和" },
+  { en: "worry", ja: "心配する" },
+  { en: "worth", ja: "〜する価値がある" },
+  { en: "worth considering", ja: "検討する価値がある" },
+  { en: "youth", ja: "若者" },
+  { en: "zone", ja: "地帯" },
+  { en: "invite", ja: "招待する" },
+  { en: "protective", ja: "保護するための／防護の" },
 ];
 
 
-
 // =======================
-//  保存キー（追加分込み）
+//  保存キー（熟語アプリ構成に寄せる）
 // =======================
-const KEY_AUDIO       = "idioms_app_audio_on_v1";
+const KEY_AUDIO       = "vocab_app_audio_on_v1";
 
 // 全モード/間違いモードを別で進行保存
-const KEY_STATE_ALL   = "idioms_state_all_v1";
-const KEY_STATE_WRONG = "idioms_state_wrong_v1";
+const KEY_STATE_ALL   = "vocab_state_all_v1";
+const KEY_STATE_WRONG = "vocab_state_wrong_v1";
 
 // 間違いセット（en文字列で管理）
-const KEY_WRONG_SET   = "idioms_wrong_set_v1";
+const KEY_WRONG_SET   = "vocab_wrong_set_v1";
 
 // 間違いのみモードON/OFF
-const KEY_WRONG_ONLY  = "idioms_wrong_only_v1";
+const KEY_WRONG_ONLY  = "vocab_wrong_only_v1";
 
-// ★テーマ（ライト/ダーク）
-const KEY_THEME       = "idioms_theme_v1";
+// テーマ（ライト/ダーク）
+const KEY_THEME       = "vocab_theme_v1";
 
 // =======================
 //  ユーティリティ
 // =======================
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
+function shuffle(arr){
+  for (let i = arr.length - 1; i > 0; i--){
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
   return arr;
 }
-
-function saveJSON(key, obj) { localStorage.setItem(key, JSON.stringify(obj)); }
-function loadJSON(key) {
-  try {
+function saveJSON(key, obj){ localStorage.setItem(key, JSON.stringify(obj)); }
+function loadJSON(key){
+  try{
     const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  }catch{ return null; }
 }
 
 // =======================
 //  テーマ（ライト/ダーク）
 // =======================
-function loadTheme() {
+function loadTheme(){
   const v = localStorage.getItem(KEY_THEME);
   return (v === "dark" || v === "light") ? v : "light";
 }
-function saveTheme(theme) {
+function saveTheme(theme){
   localStorage.setItem(KEY_THEME, theme);
 }
-function applyTheme(theme) {
+function applyTheme(theme){
   const isDark = theme === "dark";
   document.body.classList.toggle("dark", isDark);
   const btn = document.getElementById("themeToggle");
@@ -251,7 +892,7 @@ function applyTheme(theme) {
 // =======================
 //  発音（Web Speech API）
 // =======================
-function pickEnglishVoice() {
+function pickEnglishVoice(){
   const voices = speechSynthesis.getVoices();
   const preferred =
     voices.find(v => /Samantha|Karen/i.test(v.name || "")) ||
@@ -262,29 +903,24 @@ function pickEnglishVoice() {
   return preferred;
 }
 
-// "~" を読ませない
-function cleanForSpeech(text) {
-  return String(text)
-    .replaceAll("~", "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function loadAudioOn() {
+function loadAudioOn(){
   const v = localStorage.getItem(KEY_AUDIO);
-  return v === null ? true : v === "1";
+  return v === null ? true : v === "1"; // デフォON
 }
-function saveAudioOn(on) {
+function saveAudioOn(on){
   localStorage.setItem(KEY_AUDIO, on ? "1" : "0");
 }
+function updateAudioUI(){
+  const on = loadAudioOn();
+  document.getElementById("audioToggle").textContent = on ? "🔊 発音：ON" : "🔇 発音：OFF";
+}
 
-function speakEnglish(text) {
+function speakEnglish(text){
   if (!window.speechSynthesis) return;
   if (!loadAudioOn()) return;
 
-  try { speechSynthesis.cancel(); } catch {}
-  const u = new SpeechSynthesisUtterance(cleanForSpeech(text));
-
+  try{ speechSynthesis.cancel(); }catch{}
+  const u = new SpeechSynthesisUtterance(String(text));
   const voice = pickEnglishVoice();
   u.lang = voice?.lang || "en-US";
   if (voice) u.voice = voice;
@@ -294,22 +930,17 @@ function speakEnglish(text) {
   speechSynthesis.speak(u);
 }
 
-function updateAudioUI() {
-  const on = loadAudioOn();
-  document.getElementById("audioToggle").textContent = on ? "🔊 発音：ON" : "🔇 発音：OFF";
-}
-
 // =======================
 //  間違いリスト（Set）
 // =======================
-function loadWrongSet() {
+function loadWrongSet(){
   const arr = loadJSON(KEY_WRONG_SET);
   return new Set(Array.isArray(arr) ? arr : []);
 }
-function saveWrongSet(set) {
+function saveWrongSet(set){
   saveJSON(KEY_WRONG_SET, Array.from(set));
 }
-function updateWrongCountUI() {
+function updateWrongCountUI(){
   const set = loadWrongSet();
   document.getElementById("wrongCount").textContent = `間違い: ${set.size}`;
 }
@@ -317,35 +948,35 @@ function updateWrongCountUI() {
 // =======================
 //  出題モード（全 / 間違いのみ）
 // =======================
-function loadWrongOnly() {
+function loadWrongOnly(){
   return localStorage.getItem(KEY_WRONG_ONLY) === "1";
 }
-function saveWrongOnly(on) {
+function saveWrongOnly(on){
   localStorage.setItem(KEY_WRONG_ONLY, on ? "1" : "0");
 }
-function getActiveStateKey() {
+function getActiveStateKey(){
   return loadWrongOnly() ? KEY_STATE_WRONG : KEY_STATE_ALL;
 }
 
-// 出題プール（IDIOMSのindex配列）
-function getPoolIndices() {
-  if (!loadWrongOnly()) {
-    return [...Array(IDIOMS.length).keys()];
+// 出題プール（VOCABのindex配列）
+function getPoolIndices(){
+  if (!loadWrongOnly()){
+    return [...Array(VOCAB.length).keys()];
   }
   const set = loadWrongSet();
   const idxs = [];
-  for (let i = 0; i < IDIOMS.length; i++) {
-    if (set.has(IDIOMS[i].en)) idxs.push(i);
+  for (let i = 0; i < VOCAB.length; i++){
+    if (set.has(VOCAB[i].en)) idxs.push(i);
   }
   return idxs;
 }
 
-function freshStateForPool(poolIdxs) {
+function freshStateForPool(poolIdxs){
   const order = shuffle([...Array(poolIdxs.length).keys()]);
   return { poolIdxs, order, index: 0, phase: 0 }; // phase:0英 1日
 }
 
-function loadState() {
+function loadState(){
   const key = getActiveStateKey();
   const st = loadJSON(key);
   if (!st) return null;
@@ -353,30 +984,28 @@ function loadState() {
   if (typeof st.index !== "number" || typeof st.phase !== "number") return null;
   if (st.phase !== 0 && st.phase !== 1) return null;
 
-  // プールが変化したら作り直す（間違い追加/削除、モード変更など）
+  // プールが変化したら作り直す
   const poolNow = getPoolIndices();
   if (st.poolIdxs.length !== poolNow.length) return null;
 
   return st;
 }
-
-function saveState(st) {
+function saveState(st){
   const key = getActiveStateKey();
   saveJSON(key, st);
 }
 
-// 現在の熟語取得
-function getCurrentItem(st) {
+function getCurrentItem(st){
   if (!st.poolIdxs.length) return null;
-  const poolIndex = st.poolIdxs[ st.order[st.index] ]; // IDIOMSのindex
-  return { item: IDIOMS[poolIndex], idiomIndex: poolIndex };
+  const poolIndex = st.poolIdxs[ st.order[st.index] ]; // VOCABのindex
+  return { item: VOCAB[poolIndex], vocabIndex: poolIndex };
 }
 
 // =======================
 //  UI
 // =======================
-function setUI(st) {
-  const phraseEl = document.getElementById("phrase");
+function setUI(st){
+  const wordEl = document.getElementById("word");
   const meaningEl = document.getElementById("meaning");
   const progressEl = document.getElementById("progress");
   const modeEl = document.getElementById("mode");
@@ -385,11 +1014,11 @@ function setUI(st) {
   const missBox = document.getElementById("missBox");
   const missToggle = document.getElementById("missToggle");
 
-  modeEl.textContent = loadWrongOnly() ? "熟語：英→日（間違いのみ）" : "熟語：英→日";
+  modeEl.textContent = loadWrongOnly() ? "単語：英→日（間違いのみ）" : "単語：英→日";
 
   // プールが空なら案内
-  if (!st.poolIdxs.length) {
-    phraseEl.textContent = "間違いリストが空です";
+  if (!st.poolIdxs.length){
+    wordEl.textContent = "間違いリストが空です";
     meaningEl.textContent = "「間違いリストだけ出題」をOFFにするか、間違いを登録してください。";
     progressEl.textContent = "0 / 0";
     btn.textContent = "はじめる";
@@ -399,7 +1028,7 @@ function setUI(st) {
   }
 
   // 1周終わったら再シャッフル
-  if (st.index >= st.poolIdxs.length) {
+  if (st.index >= st.poolIdxs.length){
     st = freshStateForPool(getPoolIndices());
     saveState(st);
   }
@@ -409,38 +1038,38 @@ function setUI(st) {
 
   progressEl.textContent = `${st.index + 1} / ${st.poolIdxs.length}`;
 
-  // この熟語がすでに間違いリストにあるか
+  // この単語がすでに間違いリストにあるか
   const wrongSet = loadWrongSet();
   missToggle.checked = wrongSet.has(current.en);
 
-  if (st.phase === 0) {
-    phraseEl.textContent = current.en;
+  if (st.phase === 0){
+    wordEl.textContent = current.en;
     meaningEl.textContent = "";
     btn.textContent = "日本語を表示（答え合わせ）";
 
     missBox.classList.remove("show");
 
-    // ★英語が表示された瞬間に発音（ONのとき）
+    // 英語が表示された瞬間に発音（ONのとき）
     speakEnglish(current.en);
 
   } else {
-    phraseEl.textContent = current.en;
+    wordEl.textContent = current.en;
     meaningEl.textContent = current.ja;
     btn.textContent = "正解だったかな？次へGO！";
 
-    // ★答え合わせ中だけチェック欄表示
+    // 答え合わせ中だけチェック欄表示
     missBox.classList.add("show");
   }
 }
 
-function nextAction() {
+function nextAction(){
   let st = loadState();
-  if (!st) {
+  if (!st){
     const pool = getPoolIndices();
     st = freshStateForPool(pool);
   }
 
-  if (st.phase === 0) {
+  if (st.phase === 0){
     st.phase = 1;
   } else {
     st.phase = 0;
@@ -450,8 +1079,8 @@ function nextAction() {
   setUI(st);
 }
 
-function resetAll() {
-  try { speechSynthesis.cancel(); } catch {}
+function resetAll(){
+  try{ speechSynthesis.cancel(); }catch{}
   const pool = getPoolIndices();
   const st = freshStateForPool(pool);
   saveState(st);
@@ -461,13 +1090,13 @@ function resetAll() {
 // =======================
 //  初期化
 // =======================
-function init() {
-  if (!IDIOMS.length) {
-    document.getElementById("phrase").textContent = "IDIOMSが空です";
+function init(){
+  if (!VOCAB.length){
+    document.getElementById("word").textContent = "VOCABが空です";
     return;
   }
 
-  // ★テーマ初期化（DOMがある状態で確実に反映）
+  // テーマ初期化
   applyTheme(loadTheme());
   document.getElementById("themeToggle").addEventListener("click", () => {
     const now = loadTheme();
@@ -477,7 +1106,7 @@ function init() {
   });
 
   // voice読み込み遅延対策（iOS/Safari）
-  if (window.speechSynthesis) {
+  if (window.speechSynthesis){
     speechSynthesis.onvoiceschanged = () => updateAudioUI();
     setTimeout(updateAudioUI, 200);
     setTimeout(updateAudioUI, 800);
@@ -559,7 +1188,7 @@ function init() {
 
     // ONにした瞬間、今表示中の英語を1回読む（phase=0の時だけ）
     const st2 = loadState();
-    if (st2 && st2.phase === 0) {
+    if (st2 && st2.phase === 0){
       const cur = getCurrentItem(st2);
       if (cur) speakEnglish(cur.item.en);
     }
