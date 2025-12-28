@@ -103,10 +103,14 @@
       align-items: center;
       flex-wrap: nowrap;
       /* transition: background .2s ease, border-color .2s ease, color .2s ease; */
+        width: fit-content;      /* ★ 中身に合わせる */
+        max-width: 100%;         /* ★ 画面からはみ出さない保険 */
+        flex: 0 0 auto;          /* ★ 親がflexでも伸びない */
+        align-self: flex-start;  /* ★ 親がstretchでも伸びない */
     }
-    .missBox.show{ display:flex; }
+    .missBox.show{ display:inline-flex; }
     .missBox input{ width: 22px; height: 22px; }
-    .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; /* ★ 文字量にフィット */}
+    .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; display: inline-block;}
 
     /* =========================================================
        ダークモード（bodyに .dark を付ける）
