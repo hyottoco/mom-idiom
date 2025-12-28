@@ -93,7 +93,7 @@
     .small{ font-size: 14px; padding: 10px 12px; border-radius: 12px; }
 
     /* 間違いチェック（答え合わせ時だけ表示） */
-    .missBox{
+    /* .missBox{
       display:none;
       margin-top: 12px;
       padding: 10px 12px;
@@ -106,7 +106,34 @@
     }
     .missBox.show{ display:flex; }
     .missBox input{ width: 22px; height: 22px; }
-    .missBox .label{ font-size: 16px; user-select: none; }
+    .missBox .label{ font-size: 16px; user-select: none; } */
+
+
+    .missBox{ 
+    display:none;
+    margin-top: 12px;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    display: none; /* これはそのまま */
+    gap: 10px;
+    align-items: center;
+    flex-wrap: nowrap;        /* ★折り返し禁止（まずこれ） */
+    }
+    .missBox.show{ display:flex; }
+    .missBox input{ width: 22px; height: 22px; }
+    .missBox .label{
+     font-size: 16px;
+     user-select: none;
+     width: 220px;             /* ★ここが固定長（好きな幅に） */
+     display: inline-block;    /* ★幅を効かせる */
+     white-space: nowrap;      /* ★1行固定 */
+     overflow: hidden;         /* ★はみ出し隠す */
+     text-overflow: ellipsis;  /* ★「…」にする */
+    }
+
+
+
 
     /* =========================================================
        ダークモード（bodyに .dark を付ける）
@@ -165,7 +192,7 @@
 
     <!-- ★答え合わせ表示中だけ出る：間違えたチェック -->
     <div class="missBox" id="missBox">
-      <input type="checkbox" id="missToggle" style="width:20px;height:18px;" />
+      <input type="checkbox" id="missToggle">
       <label class="label" for="missToggle">復習リストに追加</label>
     </div>
 
