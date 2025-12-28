@@ -93,7 +93,7 @@
     .small{ font-size: 14px; padding: 10px 12px; border-radius: 12px; }
 
     /* 間違いチェック（答え合わせ時だけ表示） */
-    /* .missBox{
+    .missBox{
       display:none;
       margin-top: 12px;
       padding: 10px 12px;
@@ -101,39 +101,12 @@
       border-radius: 12px;
       gap: 10px;
       align-items: center;
-      flex-wrap: wrap;
-      transition: background .2s ease, border-color .2s ease, color .2s ease;
+      flex-wrap: nowrap;
+      /* transition: background .2s ease, border-color .2s ease, color .2s ease; */
     }
     .missBox.show{ display:flex; }
     .missBox input{ width: 22px; height: 22px; }
-    .missBox .label{ font-size: 16px; user-select: none; } */
-
-
-    .missBox{ 
-    display:none;
-    margin-top: 12px;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    display: none; /* これはそのまま */
-    gap: 10px;
-    align-items: center;
-    flex-wrap: nowrap;        /* ★折り返し禁止（まずこれ） */
-    }
-    .missBox.show{ display:flex; }
-    .missBox input{ width: 22px; height: 22px; }
-    .missBox .label{
-     font-size: 16px;
-     user-select: none;
-     width: 220px;             /* ★ここが固定長（好きな幅に） */
-     display: inline-block;    /* ★幅を効かせる */
-     white-space: nowrap;      /* ★1行固定 */
-     overflow: hidden;         /* ★はみ出し隠す */
-     text-overflow: ellipsis;  /* ★「…」にする */
-    }
-
-
-
+    .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; /* ★ 文字量にフィット */}
 
     /* =========================================================
        ダークモード（bodyに .dark を付ける）
