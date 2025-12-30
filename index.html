@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
 
-  <title>塾マム熟語1357</title>
+  <title>ハル熟400</title>
 
   <style>
     :root{
@@ -90,6 +90,7 @@
       margin-top: 16px;
       flex-wrap:wrap;
     }
+
     button{
       font-size: 18px;
       padding: 12px 14px;
@@ -156,19 +157,18 @@
     .reviewUI input[type="checkbox"]{ accent-color: var(--review-accent); }
 
     .topbar{
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap:10px;
-      flex-wrap:wrap;
+      display: flex;
+      justify-content: space-between; /* 左：進捗 / 右：RESET群 */
+      align-items: center;
+      gap: 10px;
     }
+
     .topbar-right{
       display:flex;
       align-items:center;
       gap:10px;
       flex-wrap:wrap;
     }
-
     .rangeInput{
       width: 3.5em;
       padding: 6px 8px;
@@ -311,7 +311,7 @@
     .modalOverlay.show{ display:flex; }
 
     .modalSheet{
-      width: min(820px, 100%);
+      width: min(500px, 100%);
       border-radius: 18px;
       border: 1px solid var(--bd);
       background: #fff;
@@ -533,6 +533,12 @@
       color: inherit;
     }
     body.dark .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
+        /* PC/iPadではカードを細くして縦長に見せる */
+    @media (min-width: 768px){
+      .card{
+        max-width: 300px;  /* 好みで 520〜680 くらいで調整 */
+      }
+    }
   </style>
 </head>
 
@@ -621,7 +627,8 @@
 
       <div class="wheelFooter">
         <button class="mini" id="wheelMoreBtn" type="button">さらに表示</button>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end;">
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; margin-left:auto;">
           <button class="mini" id="wheelJumpBtn" type="button">この単語へ移動</button>
         </div>
       </div>
@@ -1988,7 +1995,6 @@ const VOCAB = [
   { en: "yearn for ～", ja: "～を切望する" },
   { en: "yield to ～", ja: "～に屈伏する" },
 ];
-
 // ★検索を速くするための前処理
 for (const v of VOCAB){
   v._en = String(v.en || "").toLowerCase();
@@ -2475,7 +2481,6 @@ function wheelJumpToSelected(){
     st.phase = 0;
     saveState(st);
     setUI(st);
-    try{ speakEnglish(VOCAB[picked.vocabIndex].en); }catch{}
   }
 
   wheelClose();
