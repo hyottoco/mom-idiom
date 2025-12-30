@@ -195,11 +195,20 @@
       align-items: center;
       gap: 10px;
     }
+
+    .word-no{
+      font-size: 14px;   /* ← No のサイズはここ */
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1;
+      user-select: none;
+    }
+
     .word-num-header{
       font-size: 14px;
       font-weight: 600;
       color: var(--muted);
-      margin-left: 2px;
+      margin-left: 4px;
       line-height: 1;
       user-select: none;
     }
@@ -357,7 +366,7 @@
           〜
           <input id="rangeTo" class="rangeInput" type="number" min="1" value="10">
         </label>
-          No
+        <span class="word-no">No</span>
         <span id="wordNumHeader" class="word-num-header"></span>
       </div>
     </div>
