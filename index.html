@@ -3,8 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-
-  <title>塾マム熟語1357</title>
+  <title>塾マム熟語 1357</title>
 
   <style>
     :root{
@@ -38,7 +37,7 @@
     body{
       font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 5px;
       background: var(--bg);
       color: var(--fg);
       transition: background .2s ease, color .2s ease;
@@ -62,10 +61,32 @@
       margin-top: 10px;
     }
 
+    /* ✅ 復習行：左(復習) / 右(🔊🌙🔀) に分ける */
+    .reviewRow{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:nowrap;
+    }
+    .reviewRow-right{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    @media (max-width: 360px){
+      .reviewRow{ flex-wrap:wrap; }
+      .reviewRow-right{
+        width:100%;
+        justify-content:flex-end;
+        margin-left:0;
+      }
+    }
+
     .badge,
     button.small,
     .pill{
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1;
       padding: var(--pill-pad-y) var(--pill-pad-x);
       border-radius: var(--pill-radius);
@@ -78,6 +99,10 @@
       gap: 8px;
       user-select: none;
       white-space: nowrap;
+
+      /* ✅ 縦の隙間を詰める */
+      padding-top: 6px;
+      padding-bottom: 6px;
     }
 
     .pill{ cursor: pointer; }
@@ -89,11 +114,12 @@
       gap:10px;
       margin-top: 16px;
       flex-wrap:wrap;
+      align-items:center;
     }
 
     button{
-      font-size: 18px;
-      padding: 12px 14px;
+      font-size: 16px;
+      padding: 10px 14px;
       border-radius: var(--btn-radius);
       border: 1px solid var(--bd);
       background: #fff;
@@ -158,7 +184,7 @@
 
     .topbar{
       display: flex;
-      justify-content: space-between; /* 左：進捗 / 右：RESET群 */
+      justify-content: space-between;
       align-items: center;
       gap: 10px;
     }
@@ -169,9 +195,10 @@
       gap:10px;
       flex-wrap:wrap;
     }
+
     .rangeInput{
       width: 3.5em;
-      padding: 6px 8px;
+      padding: 6px 6px;
       border: 1px solid var(--bd);
       border-radius: 10px;
       font-size: 14px;
@@ -183,7 +210,7 @@
     .rangeStack{
       display:flex;
       align-items: center;
-      gap: 10px;
+      gap: 15px;
     }
 
     .word-no{
@@ -203,7 +230,7 @@
       user-select: none;
     }
 
-    .displayArea{ min-height: 140px; }
+    .displayArea{ min-height: 155px; }
 
     .word{
       margin: 18px 0 10px;
@@ -227,7 +254,7 @@
     .missBox{
       display:none;
       margin-top: 12px;
-      padding: 10px 12px;
+      padding: 6px;
       border: 1px solid var(--bd);
       border-radius: 12px;
       gap: 10px;
@@ -241,7 +268,7 @@
     }
     .missBox.show{ display:inline-flex; }
     .missBox input{ width: 22px; height: 22px; margin:0; }
-    .missBox .label{ font-size: 16px; user-select: none; white-space: nowrap; display: inline-block;}
+    .missBox .label{ font-size: 14px; user-select: none; white-space: nowrap; display: inline-block;}
 
     /* ダークモード */
     body.dark{
@@ -292,253 +319,137 @@
     }
     body.dark .page-title{ color: #e9e9ea; }
 
-    /* =========================================================
-       🎡 ホイール（軽量2D）
-    ========================================================= */
-    .modalOverlay{
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding-left: 14px;
-      padding-right: 14px;
-      padding-top: calc(env(safe-area-inset-top) + 10px);
-      padding-bottom: calc(env(safe-area-inset-bottom) + 14px);
-      z-index: 9999;
-    }
-    .modalOverlay.show{ display:flex; }
-
-    .modalSheet{
-      width: min(500px, 100%);
-      border-radius: 18px;
-      border: 1px solid var(--bd);
-      background: #fff;
-      color: #111;
-      box-shadow: 0 12px 40px rgba(0,0,0,.18);
-      overflow: hidden;
-      transform: translateY(8px);
-      animation: sheetIn .16s ease-out forwards;
-      max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px);
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    @keyframes sheetIn{ to{ transform: translateY(0); } }
-    body.dark .modalSheet{
-      background: #171a21;
-      color: #e9e9ea;
-      border-color: var(--bd-dark);
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
-    }
-
-    .modalHeader{
+    /* =========================
+       ✅ 発音速度UI
+    ========================= */
+    .speedBox{
+      flex: 0 0 auto;
       display:flex;
       align-items:center;
-      justify-content: space-between;
-      padding: 6px 12px;
-      border-bottom: 1px solid var(--bd);
-      gap: 10px;
-    }
-    body.dark .modalHeader{ border-bottom-color: var(--bd-dark); }
-
-    .modalTitle{
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: .02em;
-      opacity: .95;
-      user-select: none;
-    }
-
-    .modalHeader .mini{
-      font-size: 14px;
-      padding: 10px 12px;
+      gap:4px;
+      padding: 8px 8px;
+      border: 1px solid var(--bd);
       border-radius: 999px;
-      border: 1px solid var(--bd);
       background: transparent;
-      color: inherit;
+      user-select:none;
+      min-width: 20px;
     }
-    body.dark .modalHeader .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
-
-    .wheelSearchRow{
-      display:flex;
-      gap:8px;
-      padding: 6px;
-      border-bottom: 1px solid var(--bd);
-    }
-    body.dark .wheelSearchRow{ border-bottom-color: var(--bd-dark); }
-
-    .wheelSearchRow .mini{
-      font-size: 14px;
-      padding: 8px 10px;
-    }
-
-    .wheelSearch{
-      flex: 1;
-      border: 1px solid var(--bd);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 14px;
-      background: transparent;
-      color: inherit;
-      outline: none;
-    }
-    body.dark .wheelSearch{ border-color: var(--bd-dark); }
-
-    .wheelArea{
-      position: relative;
-      padding: 12px 12px 2px;
-    }
-
-    .wheelViewport{
-      position: relative;
-      height: calc(var(--wheel-item-h) * 7);
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      scroll-snap-type: y mandatory;
-      overscroll-behavior: contain;
-      border-radius: 16px;
-      border: 1px solid var(--bd);
-      background: rgba(0,0,0,0.02);
-      touch-action: pan-y;
-    }
-    body.dark .wheelViewport{
+    body.dark .speedBox{
       border-color: var(--bd-dark);
       background: rgba(255,255,255,0.03);
+      color: #d6d6d8;
     }
-
-    .wheelFadeTop, .wheelFadeBottom{
-      pointer-events: none;
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      height: 44px;
-      z-index: 2;
-    }
-    .wheelFadeTop{
-      top: 12px;
-      background: linear-gradient(to bottom, var(--wheel-fade), rgba(255,255,255,0));
-    }
-    .wheelFadeBottom{
-      bottom: 2px;
-      background: linear-gradient(to top, var(--wheel-fade), rgba(255,255,255,0));
-    }
-    body.dark .wheelFadeTop{
-      background: linear-gradient(to bottom, var(--wheel-fade-dark), rgba(15,17,21,0));
-    }
-    body.dark .wheelFadeBottom{
-      background: linear-gradient(to top, var(--wheel-fade-dark), rgba(15,17,21,0));
-    }
-
-    .wheelCenterLine{
-      pointer-events: none;
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      top: calc(12px + (var(--wheel-item-h) * 3));
-      height: var(--wheel-item-h);
-      border-top: 1px solid rgba(100,116,139,0.35);
-      border-bottom: 1px solid rgba(100,116,139,0.35);
-      border-radius: 14px;
-      z-index: 3;
-    }
-
-    .wheelList{
-      position: relative;
-      padding: calc(var(--wheel-item-h) * 3) 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .wheelItem{
-      height: var(--wheel-item-h);
-      display:flex;
-      align-items:center;
-      justify-content: center;
-      scroll-snap-align: center;
-      user-select: none;
-      padding: 0 14px;
-    }
-
-    .wheelItemInner{
-      width: 100%;
-      max-width: 92%;
-      text-align: left;
-      padding: 8px 10px;
-      border-radius: 14px;
-      border: 1px solid transparent;
-      line-height: 1.15;
-      word-break: break-word;
-      overflow-wrap: anywhere;
-      display: grid;
-      grid-template-columns: 3.2em 1fr;
-      column-gap: 10px;
-      align-items: center;
-    }
-
-    .wheelItemInner .num{
-      font-size: 12px;
-      opacity: .70;
-      font-variant-numeric: tabular-nums;
-      justify-self: start;
-      user-select: none;
-    }
-
-    .wheelItemInner .main{
-      font-size: 18px;
-      font-weight: 500;
-    }
-
-    .wheelItemInner .ja{
+    .speedBox input[type="range"]{
+      width: 60px;
       display: block;
-      font-size: 12px;
-      opacity: .70;
-      margin-top: 2px;
-      line-height: 1.2;
-      word-break: break-word;
-      overflow-wrap: anywhere;
+      margin: 0;
+    }
+    .speedBox .val{
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      opacity: .9;
+      min-width: 2.0em;
+      text-align: right;
     }
 
-    /* ★軽量：選択中っぽい行だけ色付け（3Dなし） */
-    .wheelItem.isActive .wheelItemInner{
-      border-color: rgba(100,116,139,0.25);
-      background: rgba(100,116,139,0.06);
-    }
-
-    .wheelFooter{
+    /* ✅ 探す行：1行固定 */
+    .searchRow{
       display:flex;
-      gap:10px;
-      padding: 8px;
-      border-top: 1px solid var(--bd);
-      justify-content: space-between;
-      flex-wrap: wrap;
       align-items:center;
+      gap:10px;
+      flex-wrap: nowrap;
     }
-    body.dark .wheelFooter{ border-top-color: var(--bd-dark); }
+    .searchRow-right{
+      margin-left:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap: nowrap;
+      min-width: 0;
+    }
+    .searchRow #speakBtn{
+      margin-left: 0; /* この行だけ */
+    }
 
-    .wheelHint{
-      font-size: 12px;
-      opacity: .75;
-      padding: 0 12px 10px;
-      user-select: none;
-      min-height: 1.2em;
-    }
-
-    .mini{
-      font-size: 14px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid var(--bd);
-      background: transparent;
-      color: inherit;
-    }
-    body.dark .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
-        /* PC/iPadではカードを細くして縦長に見せる */
+    /* PC/iPadではカードを細くして縦長に見せる */
     @media (min-width: 768px){
-      .card{
-        max-width: 300px;  /* 好みで 520〜680 くらいで調整 */
-      }
+      .card{ max-width: 300px; }
     }
+
+    #nextBtn{ width: 100%; }
+
+    /* 復習リストに追加（枠）のサイズ調整 */
+    #missBox{
+      width: 100%;
+      box-sizing: border-box;
+      justify-content: center;
+      align-self: stretch;
+      flex: 1 1 auto;
+      display: flex;
+      cursor: pointer;
+    }
+    #missBox input{ cursor: pointer; }
+
+    /* wheel（見た目はそのまま・省略せず残す） */
+    .modalOverlay{ position: fixed; inset: 0; background: rgba(0,0,0,0.35); display: none; align-items: flex-end; justify-content: center; padding-left: 14px; padding-right: 14px; padding-top: calc(env(safe-area-inset-top) + 10px); padding-bottom: calc(env(safe-area-inset-bottom) + 14px); z-index: 9999; }
+    .modalOverlay.show{ display:flex; }
+    .modalSheet{ width: min(500px, 100%); border-radius: 18px; border: 1px solid var(--bd); background: #fff; color: #111; box-shadow: 0 12px 40px rgba(0,0,0,.18); overflow: hidden; transform: translateY(8px); animation: sheetIn .16s ease-out forwards; max-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 20px); overflow: auto; -webkit-overflow-scrolling: touch; }
+    @keyframes sheetIn{ to{ transform: translateY(0); } }
+    body.dark .modalSheet{ background: #171a21; color: #e9e9ea; border-color: var(--bd-dark); box-shadow: 0 12px 40px rgba(0,0,0,.35); }
+    .modalHeader{ display:flex; align-items:center; justify-content: space-between; padding: 6px 12px; border-bottom: 1px solid var(--bd); gap: 10px; }
+    body.dark .modalHeader{ border-bottom-color: var(--bd-dark); }
+    .modalTitle{ font-size: 14px; font-weight: 700; letter-spacing: .02em; opacity: .95; user-select: none; }
+    .modalHeader .mini{ font-size: 14px; padding: 10px 12px; border-radius: 999px; border: 1px solid var(--bd); background: transparent; color: inherit; }
+    body.dark .modalHeader .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
+    .wheelSearchRow{ display:flex; gap:8px; padding: 6px; border-bottom: 1px solid var(--bd); }
+    body.dark .wheelSearchRow{ border-bottom-color: var(--bd-dark); }
+    .wheelSearch{ flex: 1; border: 1px solid var(--bd); border-radius: 12px; padding: 10px 12px; font-size: 14px; background: transparent; color: inherit; outline: none; }
+    body.dark .wheelSearch{ border-color: var(--bd-dark); }
+    .wheelArea{ position: relative; padding: 12px 12px 2px; }
+    .wheelViewport{ position: relative; height: calc(var(--wheel-item-h) * 7); overflow-y: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: y mandatory; overscroll-behavior: contain; border-radius: 16px; border: 1px solid var(--bd); background: rgba(0,0,0,0.02); touch-action: pan-y; }
+    body.dark .wheelViewport{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
+    .wheelFadeTop, .wheelFadeBottom{ pointer-events: none; position: absolute; left: 12px; right: 12px; height: 44px; z-index: 2; }
+    .wheelFadeTop{ top: 12px; background: linear-gradient(to bottom, var(--wheel-fade), rgba(255,255,255,0)); }
+    .wheelFadeBottom{ bottom: 2px; background: linear-gradient(to top, var(--wheel-fade), rgba(255,255,255,0)); }
+    body.dark .wheelFadeTop{ background: linear-gradient(to bottom, var(--wheel-fade-dark), rgba(15,17,21,0)); }
+    body.dark .wheelFadeBottom{ background: linear-gradient(to top, var(--wheel-fade-dark), rgba(15,17,21,0)); }
+    .wheelCenterLine{ pointer-events: none; position: absolute; left: 12px; right: 12px; top: calc(12px + (var(--wheel-item-h) * 3)); height: var(--wheel-item-h); border-top: 1px solid rgba(100,116,139,0.35); border-bottom: 1px solid rgba(100,116,139,0.35); border-radius: 14px; z-index: 3; display: none;}
+    .wheelList{ position: relative; padding: calc(var(--wheel-item-h) * 3) 0; margin: 0; list-style: none; }
+    .wheelItem{ height: var(--wheel-item-h); display:flex; align-items:center; justify-content: center; scroll-snap-align: center; user-select: none; padding: 0 14px; }
+    .wheelItemInner{ width: 100%; max-width: 92%; text-align: left; padding: 8px 10px; border-radius: 14px; border: 1px solid transparent; line-height: 1.15; word-break: break-word; overflow-wrap: anywhere; display: grid; grid-template-columns: 3.2em 1fr; column-gap: 10px; align-items: center; }
+    .wheelItemInner .num{ font-size: 12px; opacity: .70; font-variant-numeric: tabular-nums; justify-self: start; user-select: none; }
+    .wheelItemInner .main{ font-size: 18px; font-weight: 500; }
+    .wheelItemInner .ja{ display: block; font-size: 12px; opacity: .70; margin-top: 2px; line-height: 1.2; word-break: break-word; overflow-wrap: anywhere; }
+    .wheelItem.isActive .wheelItemInner{ border-color: rgba(100,116,139,0.25); background: rgba(100,116,139,0.06); }
+    .wheelFooter{ display:flex; gap:10px; padding: 8px; border-top: 1px solid var(--bd); justify-content: space-between; flex-wrap: wrap; align-items:center; }
+    body.dark .wheelFooter{ border-top-color: var(--bd-dark); }
+    .wheelHint{ font-size: 12px; opacity: .75; padding: 0 12px 10px; user-select: none; min-height: 1.2em; }
+    .mini{ font-size: 14px; padding: 10px 30px; border-radius: 999px; border: 1px solid var(--bd); background: transparent; color: inherit; }
+    body.dark .mini{ border-color: var(--bd-dark); background: rgba(255,255,255,0.03); }
+
+    /* ✅ 1行目（0/0 も含めて）高さを揃える */
+    .topbar .badge,
+    .topbar-right button.small{
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    /* ✅ 2行目（復習・🔊・🌙・🔀）を同じ高さで少し大きく */
+    .reviewRow .pill,
+    .reviewRow button.small{
+      padding-top: 12px;     /* ← 高さを出す */
+      padding-bottom: 12px; /* ← 高さを出す */
+    }
+
+    #resetBtn, #clearWrongBtn { font-size: 16px; }
+
+    /* ✅ 最下行（探す・発音）だけ文字を少し小さく */
+    .searchRow > button,
+    .searchRow-right > button{
+      font-size: 14px;   /* ← 好みで 13〜15px */
+    }
+
   </style>
 </head>
 
@@ -554,15 +465,17 @@
       </div>
     </div>
 
-    <div class="row">
+    <div class="row reviewRow">
       <label class="pill togglePill reviewUI" for="wrongOnlyToggle">
         <input type="checkbox" id="wrongOnlyToggle" />
         復習 <span class="count" id="wrongCount">(0)</span>
       </label>
 
-      <button class="small toggle" id="audioToggle" type="button">🔊</button>
-      <button class="small toggle" id="themeToggle" type="button">🌙</button>
-      <button class="small toggle" id="orderToggle" type="button">🔀 ランダム</button>
+      <div class="reviewRow-right">
+        <button class="small toggle" id="audioToggle" type="button">🔊</button>
+        <button class="small toggle" id="themeToggle" type="button">🌙</button>
+        <button class="small toggle" id="orderToggle" type="button">🔀</button>
+      </div>
     </div>
 
     <div class="row">
@@ -589,14 +502,22 @@
       <button class="primary" id="nextBtn" type="button">はじめる</button>
     </div>
 
-    <div class="missBox reviewUI" id="missBox">
+    <label class="missBox reviewUI" id="missBox">
       <input type="checkbox" id="missToggle">
-      <label class="label" for="missToggle">復習リストに追加</label>
-    </div>
+      <span class="label">復習リストに追加</span>
+    </label>
 
-    <div class="btns">
+    <div class="btns searchRow">
       <button id="wheelOpenBtn" type="button">🎡 探す</button>
-      <button id="speakBtn" type="button">🔊 発音</button>
+
+      <div class="searchRow-right">
+        <div class="speedBox" title="発音速度を調整します">
+          <input id="rateRange" type="range" min="0.6" max="1.2" step="0.1" value="1.0" />
+          <span id="rateLabel" class="val">1.0x</span>
+        </div>
+
+        <button id="speakBtn" type="button">🔊 発音</button>
+      </div>
     </div>
   </div>
 
@@ -636,6 +557,9 @@
   </div>
 
 <script>
+/* =========================
+   ✅ VOCAB（あなたのデータに置換）
+========================= */
 const VOCAB = [
   { en: "～ as well", ja: "～もまた" },
   { en: "a good deal (of ～)", ja: "かなり多く（の～）" },
@@ -1995,416 +1919,412 @@ const VOCAB = [
   { en: "yearn for ～", ja: "～を切望する" },
   { en: "yield to ～", ja: "～に屈伏する" },
 ];
-// ★検索を速くするための前処理
-for (const v of VOCAB){
-  v._en = String(v.en || "").toLowerCase();
-  v._ja = String(v.ja || "").toLowerCase();
-  v._mix = v._en + "\n" + v._ja;
-  v._enEsc = escapeHtml(v.en);
-  v._jaEsc = escapeHtml(v.ja);
-}
 
-const KEY_AUDIO       = "vocab_app_audio_on_v1";
-const KEY_WRONG_SET   = "vocab_wrong_set_v1";
-const KEY_WRONG_ONLY  = "vocab_wrong_only_v1";
-const KEY_THEME       = "vocab_theme_v1";
-const KEY_RANGE       = "vocab_range_v1";
-const KEY_ORDER_MODE  = "vocab_order_mode_v1";
-const KEY_WHEEL_QUERY = "vocab_wheel_query_v1";
-
-function shuffle(arr){
-  for (let i = arr.length - 1; i > 0; i--){
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+/* =========================
+   ユーティリティ
+========================= */
+const $ = (id) => document.getElementById(id);
+const LS = {
+  get(key, fallback){
+    try{
+      const v = localStorage.getItem(key);
+      return v === null ? fallback : JSON.parse(v);
+    }catch(e){
+      return fallback;
+    }
+  },
+  set(key, value){
+    try{ localStorage.setItem(key, JSON.stringify(value)); }catch(e){}
   }
-  return arr;
-}
-function saveJSON(key, obj){ localStorage.setItem(key, JSON.stringify(obj)); }
-function loadJSON(key){
-  try{
-    const raw = localStorage.getItem(key);
-    return raw ? JSON.parse(raw) : null;
-  }catch{ return null; }
-}
-function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+};
+function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
 
-function loadRange(){
-  const saved = loadJSON(KEY_RANGE);
-  const maxN = VOCAB.length;
-  let from = 1;
-  let to = Math.min(10, maxN);
-  if (saved && typeof saved.from === "number" && typeof saved.to === "number"){
-    from = saved.from;
-    to = saved.to;
-  }
-  from = clamp(Math.floor(from), 1, maxN);
-  to   = clamp(Math.floor(to),   1, maxN);
-  if (from > to) [from, to] = [to, from];
-  return { from, to };
-}
-function saveRange(r){ saveJSON(KEY_RANGE, r); }
+/* =========================
+   要素
+========================= */
+const pageTitle = $("pageTitle");
+const progressEl = $("progress");
+const wordTextEl = $("wordText");
+const meaningEl = $("meaning");
+const wordNumHeader = $("wordNumHeader");
 
-function loadTheme(){
-  const v = localStorage.getItem(KEY_THEME);
-  return (v === "dark" || v === "light") ? v : "light";
-}
-function saveTheme(theme){ localStorage.setItem(KEY_THEME, theme); }
-function applyTheme(theme){
-  const isDark = theme === "dark";
-  document.body.classList.toggle("dark", isDark);
-  const btn = document.getElementById("themeToggle");
-  if (btn) btn.textContent = isDark ? "☀️" : "🌙";
-}
+const nextBtn = $("nextBtn");
+const resetBtn = $("resetBtn");
+const clearWrongBtn = $("clearWrongBtn");
 
-function loadOrderMode(){
-  const v = localStorage.getItem(KEY_ORDER_MODE);
-  return (v === "asc" || v === "random") ? v : "random";
-}
-function saveOrderMode(mode){ localStorage.setItem(KEY_ORDER_MODE, mode); }
-function updateOrderUI(){
-  const mode = loadOrderMode();
-  const btn = document.getElementById("orderToggle");
-  if (!btn) return;
-  btn.textContent = (mode === "random") ? "🔀" : "🔢";
-}
+const wrongOnlyToggle = $("wrongOnlyToggle");
+const wrongCount = $("wrongCount");
 
-function pickEnglishVoice(){
-  const voices = speechSynthesis.getVoices();
-  const preferred =
-    voices.find(v => /Samantha|Karen/i.test(v.name || "")) ||
-    voices.find(v => (v.lang || "").toLowerCase().startsWith("en-us")) ||
-    voices.find(v => (v.lang || "").toLowerCase().startsWith("en-gb")) ||
-    voices.find(v => (v.lang || "").toLowerCase().startsWith("en")) ||
-    null;
-  return preferred;
-}
+const missBox = $("missBox");
+const missToggle = $("missToggle");
 
-function loadAudioOn(){
-  const v = localStorage.getItem(KEY_AUDIO);
-  return v === null ? true : v === "1";
-}
-function saveAudioOn(on){ localStorage.setItem(KEY_AUDIO, on ? "1" : "0"); }
-function updateAudioUI(){
-  const on = loadAudioOn();
-  document.getElementById("audioToggle").textContent = on ? "🔊" : "🔇";
-}
+const audioToggle = $("audioToggle");
+const themeToggle = $("themeToggle");
+const orderToggle = $("orderToggle");
 
-function speakEnglish(text){
-  if (!window.speechSynthesis) return;
-  if (!loadAudioOn()) return;
+const rangeFrom = $("rangeFrom");
+const rangeTo = $("rangeTo");
 
-  try{ speechSynthesis.cancel(); }catch{}
-  const u = new SpeechSynthesisUtterance(String(text));
-  const voice = pickEnglishVoice();
-  u.lang = voice?.lang || "en-US";
-  if (voice) u.voice = voice;
-  u.rate = 1.0;
-  u.pitch = 1.0;
-  speechSynthesis.speak(u);
-}
+const wheelOpenBtn = $("wheelOpenBtn");
+const speakBtn = $("speakBtn");
 
-function loadWrongSet(){
-  const arr = loadJSON(KEY_WRONG_SET);
-  return new Set(Array.isArray(arr) ? arr : []);
-}
-function saveWrongSet(set){ saveJSON(KEY_WRONG_SET, Array.from(set)); }
-function updateWrongCountUI(){
-  const set = loadWrongSet();
-  document.getElementById("wrongCount").textContent = `:${set.size}`;
-}
+/* 速度UI */
+const rateRange = $("rateRange");
+const rateLabel = $("rateLabel");
 
-function loadWrongOnly(){ return localStorage.getItem(KEY_WRONG_ONLY) === "1"; }
-function saveWrongOnly(on){ localStorage.setItem(KEY_WRONG_ONLY, on ? "1" : "0"); }
+/* wheel modal */
+const wheelOverlay = $("wheelOverlay");
+const wheelCloseBtn = $("wheelCloseBtn");
+const wheelSearchInput = $("wheelSearchInput");
+const wheelClearSearchBtn = $("wheelClearSearchBtn");
+const wheelList = $("wheelList");
+const wheelViewport = $("wheelViewport");
+const wheelMoreBtn = $("wheelMoreBtn");
+const wheelJumpBtn = $("wheelJumpBtn");
+const wheelHint = $("wheelHint");
 
-function getActiveStateKey(){
-  const { from, to } = loadRange();
-  const base = loadWrongOnly() ? "wrong" : "all";
-  return `vocab_state_${base}_r${from}-${to}_v1`;
-}
+/* =========================
+   状態（✅ phase方式に修正）
+========================= */
+const APP_KEY = "ei_idiom_state_v2"; // ←v1だと旧保存が混ざるので v2 推奨
 
-function getPoolIndices(){
-  const { from, to } = loadRange();
-  const start = from - 1;
-  const end   = to - 1;
+const state = {
+  idx: 0,
+  orderRandom: true,
+  audioOn: true,
+  dark: false,
+  wrongSet: {},
 
-  const ranged = [];
-  for (let i = start; i <= end; i++){
-    if (i >= 0 && i < VOCAB.length) ranged.push(i);
-  }
+  rangeFrom: 1,
+  rangeTo: Math.min(10, VOCAB.length),
+  shuffled: [],
+  wrongOnly: false,
 
-  if (!loadWrongOnly()) return ranged;
+  rate: 1.0,
 
-  const set = loadWrongSet();
-  return ranged.filter(i => set.has(VOCAB[i].en));
-}
-
-function freshStateForPool(poolIdxs){
-  const mode = loadOrderMode();
-  let order = [...Array(poolIdxs.length).keys()];
-  if (mode === "random") order = shuffle(order);
-  else order.sort((a, b) => poolIdxs[a] - poolIdxs[b]);
-  return { poolIdxs, order, index: 0, phase: 0 };
-}
-
-function loadState(){
-  const key = getActiveStateKey();
-  const st = loadJSON(key);
-  if (!st) return null;
-  if (!Array.isArray(st.poolIdxs) || !Array.isArray(st.order)) return null;
-  if (typeof st.index !== "number" || typeof st.phase !== "number") return null;
-  if (st.phase !== 0 && st.phase !== 1) return null;
-
-  const poolNow = getPoolIndices();
-  if (st.poolIdxs.length !== poolNow.length) return null;
-  return st;
-}
-function saveState(st){
-  const key = getActiveStateKey();
-  saveJSON(key, st);
-}
-
-function getCurrentItem(st){
-  if (!st.poolIdxs.length) return null;
-  const poolIndex = st.poolIdxs[ st.order[st.index] ];
-  return { item: VOCAB[poolIndex], vocabIndex: poolIndex };
-}
-
-function setUI(st){
-  const wordNumHeaderEl = document.getElementById("wordNumHeader");
-  const wordTextEl = document.getElementById("wordText");
-  const meaningEl = document.getElementById("meaning");
-  const progressEl = document.getElementById("progress");
-  const btn = document.getElementById("nextBtn");
-
-  const missBox = document.getElementById("missBox");
-  const missToggle = document.getElementById("missToggle");
-
-  if (!st.poolIdxs.length){
-    wordNumHeaderEl.textContent = "";
-    wordTextEl.textContent = "（出題がありません）";
-    meaningEl.textContent = "範囲を広げるか、「復習開始」をOFFにするか、復習リストを登録してね";
-    progressEl.textContent = "0 / 0";
-    btn.textContent = "はじめる";
-    missBox.classList.remove("show");
-    missToggle.checked = false;
-    return;
-  }
-
-  if (st.index >= st.poolIdxs.length){
-    st = freshStateForPool(getPoolIndices());
-    saveState(st);
-  }
-
-  const cur = getCurrentItem(st);
-  const current = cur.item;
-  const number = cur.vocabIndex + 1;
-
-  progressEl.textContent = `${st.index + 1} / ${st.poolIdxs.length}`;
-
-  const wrongSet = loadWrongSet();
-  missToggle.checked = wrongSet.has(current.en);
-
-  wordNumHeaderEl.textContent = number;
-  wordTextEl.textContent = current.en;
-
-  if (st.phase === 0){
-    meaningEl.textContent = "";
-    btn.textContent = "日本語訳を確認 （答え合わせ）";
-    missBox.classList.remove("show");
-    speakEnglish(current.en);
-  } else {
-    meaningEl.textContent = current.ja;
-    btn.textContent = "正解だったかな？ 次の単語へ！";
-    missBox.classList.add("show");
-  }
-}
-
-function nextAction(){
-  let st = loadState();
-  if (!st){
-    const pool = getPoolIndices();
-    st = freshStateForPool(pool);
-    saveState(st);
-    setUI(st);
-    return;
-  }
-
-  if (st.phase === 0) st.phase = 1;
-  else { st.phase = 0; st.index += 1; }
-
-  saveState(st);
-  setUI(st);
-}
-
-function resetAll(){
-  try{ speechSynthesis.cancel(); }catch{}
-  const pool = getPoolIndices();
-  const st = freshStateForPool(pool);
-  saveState(st);
-  setUI(st);
-}
-
-/* =========================================================
-   🎡 ホイール（軽量2D＋ページング）
-========================================================= */
-const wheel = {
-  overlay: null,
-  viewport: null,
-  list: null,
-  search: null,
-  hint: null,
-  btnJump: null,
-  closeBtn: null,
-  clearBtn: null,
-  openBtn: null,
-  moreBtn: null,
-
-  pool: [],
-  filtered: [],
-  activeIndex: 0,
-
-  // ページング
-  pageSize: 99999,     // ★最初に表示する最大件数（SE2向け）
-  renderedCount: 0,  // 現在描画済み件数
-  lastQuery: "",
+  started: false,  // ✅ はじめる押したか
+  phase: 0         // ✅ 0:出題  1:答え
 };
 
-function loadWheelQuery(){
-  const v = localStorage.getItem(KEY_WHEEL_QUERY);
-  return (typeof v === "string") ? v : "";
+function loadState(){
+  const saved = LS.get(APP_KEY, null);
+  if(!saved) return;
+
+  if(typeof saved.idx === "number") state.idx = saved.idx;
+  if(typeof saved.orderRandom === "boolean") state.orderRandom = saved.orderRandom;
+  if(typeof saved.audioOn === "boolean") state.audioOn = saved.audioOn;
+  if(typeof saved.dark === "boolean") state.dark = saved.dark;
+  if(saved.wrongSet && typeof saved.wrongSet === "object") state.wrongSet = saved.wrongSet;
+  if(typeof saved.rangeFrom === "number") state.rangeFrom = saved.rangeFrom;
+  if(typeof saved.rangeTo === "number") state.rangeTo = saved.rangeTo;
+  if(Array.isArray(saved.shuffled)) state.shuffled = saved.shuffled;
+  if(typeof saved.wrongOnly === "boolean") state.wrongOnly = saved.wrongOnly;
+  if(typeof saved.rate === "number") state.rate = saved.rate;
+
+  if(typeof saved.started === "boolean") state.started = saved.started;
+  if(typeof saved.phase === "number") state.phase = saved.phase;
 }
-function saveWheelQuery(q){ localStorage.setItem(KEY_WHEEL_QUERY, q); }
+function saveState(){ LS.set(APP_KEY, state); }
 
-function buildWheelPool(){
-  const poolIdxs = getPoolIndices();
-  const arranged = poolIdxs.slice().sort((a,b)=>a-b);
-  return arranged.map(vocabIndex => {
-    const v = VOCAB[vocabIndex];
-    return {
-      vocabIndex,
-      _en: v._en,
-      _mix: v._mix,
-      enEsc: v._enEsc,
-      jaEsc: v._jaEsc
-    };
-  });
+function inRangeIndices(){
+  const a = clamp((state.rangeFrom|0), 1, VOCAB.length);
+  const b = clamp((state.rangeTo|0), 1, VOCAB.length);
+  const lo = Math.min(a,b);
+  const hi = Math.max(a,b);
+  const arr = [];
+  for(let i=lo-1;i<=hi-1;i++) arr.push(i);
+  return arr;
 }
-
-function wheelFilter(list, q){
-  const query = String(q || "").trim().toLowerCase();
-  if (!query) return list.slice();
-
-  const starts = [];
-  const contains = [];
-  for (const it of list){
-    if (it._en.startsWith(query)) starts.push(it);
-    else if (it._mix.includes(query)) contains.push(it);
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return starts.concat(contains);
+  return a;
 }
+function buildOrder(){
+  const base = inRangeIndices();
 
-function wheelRender(resetPaging=true){
-  const q = wheel.search.value;
-  saveWheelQuery(q);
-  wheel.lastQuery = q;
-
-  wheel.pool = buildWheelPool();
-  wheel.filtered = wheelFilter(wheel.pool, q);
-
-  // 初期位置（現在の単語が含まれていればそこへ）
-  const st = loadState();
-  const cur = st ? getCurrentItem(st) : null;
-  let idx = 0;
-  if (cur){
-    const vi = cur.vocabIndex;
-    const found = wheel.filtered.findIndex(x => x.vocabIndex === vi);
-    if (found >= 0) idx = found;
-  }
-  wheel.activeIndex = clamp(idx, 0, Math.max(0, wheel.filtered.length - 1));
-
-  if (resetPaging){
-    wheel.renderedCount = 0;
-    wheel.list.innerHTML = "";
+  let pool = base;
+  if(state.wrongOnly){
+    pool = base.filter(i => state.wrongSet[i]);
   }
 
-  if (wheel.filtered.length === 0){
-    wheel.list.innerHTML =
-      `<li class="wheelItem isActive" data-index="0">
-         <div class="wheelItemInner" style="opacity:.75;border-color:transparent;">一致する単語がありません</div>
-       </li>`;
-    wheel.hint.textContent = "検索条件を変えてみてください。";
-    wheel.moreBtn.style.display = "none";
+  if(pool.length === 0){
+    state.shuffled = [];
+    state.idx = 0;
     return;
   }
 
-  // 追加描画（最大 pageSize 件ずつ）
-  const from = wheel.renderedCount;
-  const to = Math.min(wheel.renderedCount + wheel.pageSize, wheel.filtered.length);
+  state.shuffled = state.orderRandom ? shuffle(pool) : pool;
+  state.idx = 0;
+}
+function currentRealIndex(){
+  if(state.shuffled.length === 0) return null;
+  return state.shuffled[clamp(state.idx, 0, state.shuffled.length-1)];
+}
 
-  let html = "";
-  for (let i = from; i < to; i++){
-    const it = wheel.filtered[i];
-    html +=
-      `<li class="wheelItem" data-index="${i}">
-         <div class="wheelItemInner">
-           <div class="num">${it.vocabIndex + 1}</div>
-           <div>
-             <div class="main">${it.enEsc}</div>
-             <span class="ja">${it.jaEsc}</span>
-           </div>
-         </div>
-       </li>`;
+/* =========================
+   発音（速度対応）
+========================= */
+function speak(text){
+  if(!state.audioOn) return;
+  if(!("speechSynthesis" in window)) return;
+
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = clamp(Number(state.rate) || 1.0, 0.1, 10);
+  window.speechSynthesis.speak(u);
+}
+function speakCurrent(){
+  const real = currentRealIndex();
+  if(real === null) return;
+  speak(VOCAB[real].en);
+}
+
+/* =========================
+   UI更新（✅ setUI相当）
+========================= */
+function updateTopUI(){
+  const total = state.shuffled.length;
+
+  // progress
+  if(!state.started){
+    progressEl.textContent = `0 / ${total}`;
+  }else{
+    const cur = total ? (state.idx + 1) : 0;
+    progressEl.textContent = `${cur} / ${total}`;
   }
 
-  // 一括append（分割より安定して速いことが多い）
-  wheel.list.insertAdjacentHTML("beforeend", html);
+  // No（通し番号）
+  const real = currentRealIndex();
+  wordNumHeader.textContent = (!state.started || real === null) ? "" : String(real + 1);
 
-  wheel.renderedCount = to;
+  // range inputs
+  rangeFrom.value = String(state.rangeFrom);
+  rangeTo.value = String(state.rangeTo);
 
-  wheel.hint.textContent = `表示: ${wheel.filtered.length} 件（描画: ${wheel.renderedCount}/${wheel.filtered.length}）`;
+  // toggles
+  wrongOnlyToggle.checked = !!state.wrongOnly;
+  orderToggle.textContent = state.orderRandom ? "🔀" : "🔢";
+  audioToggle.textContent = state.audioOn ? "🔊" : "🔇";
+  themeToggle.textContent = state.dark ? "🌙" : "☀️";
 
-  // 「さらに表示」ボタン
-  wheel.moreBtn.style.display = (wheel.renderedCount < wheel.filtered.length) ? "inline-flex" : "none";
+  // wrong count
+  const base = inRangeIndices();
+  const cnt = base.filter(i => state.wrongSet[i]).length;
+  wrongCount.textContent = `(${cnt})`;
 
-  // アクティブ行の見た目更新
-  wheelUpdateActiveClass();
+  // speed
+  rateRange.value = String(state.rate);
+  rateLabel.textContent = `${state.rate.toFixed(1)}x`;
+}
 
-  // 初回のみ：該当位置へ
-  if (resetPaging){
-    requestAnimationFrame(() => {
-      // activeIndexがまだ描画されていないなら、そのindexまで出す
-      while (wheel.activeIndex >= wheel.renderedCount && wheel.renderedCount < wheel.filtered.length){
-        wheelRender(false);
-      }
-      wheelScrollToIndex(wheel.activeIndex, false);
-    });
+function render(){
+  pageTitle.textContent = document.title;
+
+  const real = currentRealIndex();
+  updateTopUI();
+  // ✅ どのフェーズでも「今の単語」の復習ON/OFF表示に同期する
+  if(real !== null){
+    missToggle.checked = !!state.wrongSet[real];
   }
+
+  // 出題がない
+  if(real === null){
+    wordTextEl.textContent = "リストが空です";
+    meaningEl.textContent = "範囲を広げるか、「復習」をOFFにするか、復習リストを登録してね";
+    nextBtn.textContent = "はじめる";
+    state.started = false;
+    state.phase = 0;
+    missBox.classList.remove("show");
+    missToggle.checked = false;
+    saveState();
+    return;
+  }
+
+  // まだ開始前
+  if(!state.started){
+    wordTextEl.textContent = "Ready Steady GO!";
+    meaningEl.textContent = "";
+    nextBtn.textContent = "はじめる";
+    missBox.classList.remove("show");
+    missToggle.checked = false;
+    saveState();
+    return;
+  }
+
+  // 開始後
+  const item = VOCAB[real];
+  wordTextEl.textContent = item.en;
+
+  if(state.phase === 0){
+    // ✅ 出題
+    meaningEl.textContent = "";
+    nextBtn.textContent = "日本語訳を確認（答え合わせ）";
+    missBox.classList.remove("show");
+  }else{
+    // ✅ 答え
+    meaningEl.textContent = item.ja;
+    nextBtn.textContent = "正解だったかな？ 次の単語へ！";
+    missBox.classList.add("show");
+    missToggle.checked = !!state.wrongSet[real];
+  }
+
+  saveState();
+}
+
+/* =========================
+   操作（✅ 2段階）
+========================= */
+function startOrAdvance(){
+  const real = currentRealIndex();
+  if(real === null) { render(); return; }
+
+  // はじめる
+  if(!state.started){
+    state.started = true;
+    state.phase = 0;
+    render();
+    speakCurrent();   // ✅ ここでだけ発音
+    return;
+  }
+
+  // 出題→答え合わせ
+  if(state.phase === 0){
+    state.phase = 1;
+    render();
+    return;
+  }
+
+  // 答え→次の単語（phaseを0に戻す）
+  if(state.idx >= state.shuffled.length - 1){
+    state.idx = 0;
+  }else{
+    state.idx++;
+  }
+  state.phase = 0;
+  render();
+  speakCurrent();     // ✅ 次の問題に入った瞬間だけ発音
+}
+
+
+function hardReset(){
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  buildOrder();
+  render();
+}
+
+function clearWrong(){
+  state.wrongSet = {};
+  // 復習モード中に空になったら詰むので作り直し
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+}
+
+function applyRangeFromInputs(){
+  const a = Number(rangeFrom.value || 1);
+  const b = Number(rangeTo.value || 1);
+  state.rangeFrom = clamp(a, 1, VOCAB.length);
+  state.rangeTo   = clamp(b, 1, VOCAB.length);
+
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+}
+
+/* =========================
+   Wheel（検索）
+========================= */
+let wheelFiltered = [];
+let wheelShown = 0;
+let wheelActiveIndex = 0;
+const WHEEL_BATCH = 9999;
+/* ✅ 追加 */
+let wheelSnapTimer = 0;
+
+function wheelMatch(q, item){
+  if(!q) return true;
+  const s = q.toLowerCase();
+  return (item.en || "").toLowerCase().includes(s) || (item.ja || "").toLowerCase().includes(s);
+}
+function escapeHtml(s){
+  return String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+function updateWheelHint(){
+  const total = wheelFiltered.length;
+  wheelHint.textContent = (total === 0) ? "該当なし" : `${total}件 / 表示 ${wheelShown}件`;
+  wheelMoreBtn.style.display = (wheelShown >= wheelFiltered.length) ? "none" : "";
+}
+// function renderWheelItems(){
+//   wheelList.innerHTML = "";
+//   const slice = wheelFiltered.slice(0, wheelShown);
+//   slice.forEach((v, idx) => {
+//     const li = document.createElement("li");
+//     li.className = "wheelItem" + (idx === wheelActiveIndex ? " isActive" : "");
+//     li.innerHTML = `
+//       <div class="wheelItemInner">
+//         <div class="num">${v.i + 1}</div>
+//         <div>
+//           <div class="main">${escapeHtml(v.en)}</div>
+//           <span class="ja">${escapeHtml(v.ja)}</span>
+//         </div>
+//       </div>
+//     `;
+//     li.addEventListener("click", () => {
+//       wheelActiveIndex = idx;
+//       [...wheelList.querySelectorAll(".wheelItem")].forEach(x => x.classList.remove("isActive"));
+//       li.classList.add("isActive");
+//     });
+//     wheelList.appendChild(li);
+//   });
+// }
+
+function wheelUpdateActiveClass(){
+  const items = wheelList.querySelectorAll(".wheelItem");
+  items.forEach((li, idx) => li.classList.toggle("isActive", idx === wheelActiveIndex));
 }
 
 function wheelScrollToIndex(i, smooth){
-  const items = wheel.list.querySelectorAll(".wheelItem");
-  if (!items.length) return;
+  const items = wheelList.querySelectorAll(".wheelItem");
+  if(!items.length) return;
 
   const idx = clamp(i, 0, items.length - 1);
   const target = items[idx];
-  const top = target.offsetTop + (target.offsetHeight/2) - (wheel.viewport.clientHeight/2);
-  wheel.viewport.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
-  wheel.activeIndex = idx;
+
+  const top = target.offsetTop + (target.offsetHeight / 2) - (wheelViewport.clientHeight / 2);
+  wheelViewport.scrollTo({ top, behavior: smooth ? "smooth" : "auto" });
+
+  wheelActiveIndex = idx;
   wheelUpdateActiveClass();
 }
 
 function wheelPickNearest(){
-  const items = wheel.list.querySelectorAll(".wheelItem");
-  if (!items.length) return 0;
+  const items = wheelList.querySelectorAll(".wheelItem");
+  if(!items.length) return 0;
 
-  const centerY = wheel.viewport.scrollTop + wheel.viewport.clientHeight/2;
+  const centerY = wheelViewport.scrollTop + wheelViewport.clientHeight / 2;
+
   let best = 0;
   let bestDist = Infinity;
-
   items.forEach((el, i) => {
-    const y = el.offsetTop + el.offsetHeight/2;
+    const y = el.offsetTop + el.offsetHeight / 2;
     const d = Math.abs(y - centerY);
-    if (d < bestDist){
+    if(d < bestDist){
       bestDist = d;
       best = i;
     }
@@ -2414,310 +2334,217 @@ function wheelPickNearest(){
 
 function wheelSnap(){
   const i = wheelPickNearest();
-  wheel.activeIndex = i;
   wheelScrollToIndex(i, true);
 }
 
-function wheelUpdateActiveClass(){
-  const items = wheel.list.querySelectorAll(".wheelItem");
-  items.forEach((li, idx) => {
-    li.classList.toggle("isActive", idx === wheel.activeIndex);
+function renderWheelItems(){
+  wheelList.innerHTML = "";
+  const slice = wheelFiltered.slice(0, wheelShown);
+
+  slice.forEach((v, idx) => {
+    const li = document.createElement("li");
+    li.className = "wheelItem";
+    li.dataset.index = String(idx);
+    li.innerHTML = `
+      <div class="wheelItemInner">
+        <div class="num">${v.i + 1}</div>
+        <div>
+          <div class="main">${escapeHtml(v.en)}</div>
+          <span class="ja">${escapeHtml(v.ja)}</span>
+        </div>
+      </div>
+    `;
+    wheelList.appendChild(li);
+  });
+
+  // ✅ 描画後に active 表示を反映
+  wheelActiveIndex = clamp(wheelActiveIndex, 0, Math.max(0, slice.length - 1));
+  wheelUpdateActiveClass();
+}
+
+function rebuildWheelList(){
+  const q = (wheelSearchInput.value || "").trim();
+  wheelFiltered = VOCAB.map((v, i) => ({...v, i})).filter(v => wheelMatch(q, v));
+  wheelShown = wheelFiltered.length;   // ←全件表示
+  wheelActiveIndex = 0;
+  renderWheelItems();
+  updateWheelHint();
+  wheelViewport.scrollTop = 0;
+  // ✅ 一旦先頭に寄せた後、中央選択を確定
+  requestAnimationFrame(() => {
+    wheelActiveIndex = 0;
+    wheelScrollToIndex(0, false);
   });
 }
-
-function wheelOpen(){
-  wheel.overlay.classList.add("show");
-  wheel.overlay.setAttribute("aria-hidden", "false");
-
-  wheel.search.value = loadWheelQuery() || "";
-  wheel.list.innerHTML = "";
-  wheel.renderedCount = 0;
-
-  // 背景スクロール停止（iPhone対策）
-  document.body.style.overflow = "hidden";
-
-  // 先に表示
-  wheel.hint.textContent = "準備中…";
-  wheelRender(true);
-
-  setTimeout(() => {
-    wheel.search.focus({ preventScroll: true });
-  }, 120);
+function openWheel(){
+  wheelOverlay.classList.add("show");
+  wheelOverlay.setAttribute("aria-hidden", "false");
+  wheelSearchInput.value = "";
+  wheelShown = 0;
+  wheelActiveIndex = 0;
+  rebuildWheelList();
+  setTimeout(()=>wheelSearchInput.focus(), 50);
 }
-
-function wheelClose(){
-  wheel.overlay.classList.remove("show");
-  wheel.overlay.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
+function closeWheel(){
+  wheelOverlay.classList.remove("show");
+  wheelOverlay.setAttribute("aria-hidden", "true");
 }
-
+function wheelMore(){
+  wheelShown = Math.min(wheelShown + WHEEL_BATCH, wheelFiltered.length);
+  renderWheelItems();
+  updateWheelHint();
+}
 function wheelJumpToSelected(){
-  if (!wheel.filtered.length) return;
-  const picked = wheel.filtered[clamp(wheel.activeIndex, 0, wheel.filtered.length - 1)];
-  if (!picked) return;
+  if(wheelFiltered.length === 0) return;
+  const picked = wheelFiltered[wheelActiveIndex];
+  if(!picked) return;
 
-  const poolIdxs = getPoolIndices();
-  if (!poolIdxs.length) return;
-
-  const st = loadState() || freshStateForPool(poolIdxs);
-
-  const poolNow = getPoolIndices();
-  if (!Array.isArray(st.poolIdxs) || st.poolIdxs.length !== poolNow.length){
-    st.poolIdxs = poolNow;
-    st.order = freshStateForPool(poolNow).order;
+  const pos = state.shuffled.indexOf(picked.i);
+  if(pos >= 0){
+    state.idx = pos;
+  }else{
+    state.wrongOnly = false;
+    wrongOnlyToggle.checked = false;
+    buildOrder();
+    const pos2 = state.shuffled.indexOf(picked.i);
+    state.idx = Math.max(0, pos2);
   }
 
-  let foundIndex = -1;
-  for (let i=0; i<st.order.length; i++){
-    const poolIndex = st.poolIdxs[ st.order[i] ];
-    if (poolIndex === picked.vocabIndex){
-      foundIndex = i;
-      break;
-    }
-  }
-
-  if (foundIndex >= 0){
-    st.index = foundIndex;
-    st.phase = 0;
-    saveState(st);
-    setUI(st);
-  }
-
-  wheelClose();
+  // ✅ 探した単語へ移動したら「出題状態」に戻す
+  state.started = true;
+  state.phase = 0;
+  render();
+  closeWheel();
 }
 
-function escapeHtml(str){
-  return String(str)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
+/* =========================
+   イベント
+========================= */
+nextBtn.addEventListener("click", startOrAdvance);
 
-/* =========================================================
-   init
-========================================================= */
-function init(){
-  document.getElementById("pageTitle").textContent = document.title;
+resetBtn.addEventListener("click", hardReset);
+clearWrongBtn.addEventListener("click", clearWrong);
 
-  if (!VOCAB.length){
-    document.getElementById("wordText").textContent = "VOCABが空です";
-    return;
+wrongOnlyToggle.addEventListener("change", () => {
+  state.wrongOnly = wrongOnlyToggle.checked;
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+});
+
+missToggle.addEventListener("change", () => {
+  const real = currentRealIndex();
+  if(real === null) return;
+
+  if(missToggle.checked) state.wrongSet[real] = true;
+  else delete state.wrongSet[real];
+
+  updateTopUI();  // ← これで( )の数や表示だけ更新
+  saveState();    // ← 状態保存
+
+  // ※ render() は呼ばない（→ 発音しない）
+});
+
+audioToggle.addEventListener("click", () => {
+  state.audioOn = !state.audioOn;
+  if(!state.audioOn){
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+  }
+  render();
+});
+
+themeToggle.addEventListener("click", () => {
+  state.dark = !state.dark;
+  document.body.classList.toggle("dark", state.dark);
+  render();
+});
+
+orderToggle.addEventListener("click", () => {
+  state.orderRandom = !state.orderRandom;
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+});
+
+rangeFrom.addEventListener("change", applyRangeFromInputs);
+rangeTo.addEventListener("change", applyRangeFromInputs);
+
+rateRange.addEventListener("input", () => {
+  state.rate = Number(rateRange.value);
+  rateLabel.textContent = `${state.rate.toFixed(1)}x`;
+  saveState();
+});
+
+// 発音ボタン（いつでもOK）
+speakBtn.addEventListener("click", () => {
+  const real = currentRealIndex();
+  if(real === null) return;
+  speak(VOCAB[real].en);
+});
+
+// wheel
+wheelOpenBtn.addEventListener("click", openWheel);
+wheelCloseBtn.addEventListener("click", closeWheel);
+wheelClearSearchBtn.addEventListener("click", () => { wheelSearchInput.value = ""; rebuildWheelList(); });
+wheelSearchInput.addEventListener("input", rebuildWheelList);
+wheelMoreBtn.addEventListener("click", wheelMore);
+wheelJumpBtn.addEventListener("click", wheelJumpToSelected);
+wheelList.addEventListener("click", (e) => {
+  const li = e.target.closest(".wheelItem");
+  if(!li) return;
+  const idx = parseInt(li.dataset.index || "0", 10);
+  if(!Number.isFinite(idx)) return;
+
+  wheelScrollToIndex(idx, true);
+});
+wheelViewport.addEventListener("scroll", () => {
+  clearTimeout(wheelSnapTimer);
+  wheelSnapTimer = setTimeout(() => {
+    if (wheelOverlay.classList.contains("show")) wheelSnap();
+  }, 140);
+}, { passive: true });
+
+wheelOverlay.addEventListener("click", (e) => { if(e.target === wheelOverlay) closeWheel(); });
+document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOverlay.classList.contains("show")) closeWheel(); });
+
+/* =========================
+   初期化
+========================= */
+(function init(){
+  rangeTo.max = String(VOCAB.length);
+  rangeFrom.max = String(VOCAB.length);
+
+  loadState();
+
+  state.rangeFrom = clamp(state.rangeFrom, 1, VOCAB.length);
+  state.rangeTo   = clamp(state.rangeTo,   1, VOCAB.length);
+
+  document.body.classList.toggle("dark", state.dark);
+
+  state.rate = clamp(Number(state.rate) || 1.0, 0.6, 1.4);
+  rateRange.value = String(state.rate);
+  rateLabel.textContent = `${state.rate.toFixed(1)}x`;
+
+  // 並びの整合性チェック
+  if(!Array.isArray(state.shuffled) || state.shuffled.length === 0){
+    buildOrder();
+  }else{
+    const base = new Set(inRangeIndices());
+    const ok = state.shuffled.every(i => base.has(i));
+    if(!ok) buildOrder();
+    state.idx = clamp(state.idx, 0, state.shuffled.length - 1);
   }
 
-  applyTheme(loadTheme());
-  document.getElementById("themeToggle").addEventListener("click", () => {
-    const now = loadTheme();
-    const next = (now === "dark") ? "light" : "dark";
-    saveTheme(next);
-    applyTheme(next);
-  });
+  // ✅ 初期は「はじめる」待ちにする（保存があってもここで統一したいなら true/false変えられます）
+  // state.started = false;
+  // state.phase = 0;
 
-  updateOrderUI();
-
-  if (window.speechSynthesis){
-    speechSynthesis.onvoiceschanged = () => updateAudioUI();
-    setTimeout(updateAudioUI, 200);
-    setTimeout(updateAudioUI, 800);
-  } else {
-    document.getElementById("audioToggle").disabled = true;
-    document.getElementById("speakBtn").disabled = true;
-  }
-
-  const rangeFromEl = document.getElementById("rangeFrom");
-  const rangeToEl   = document.getElementById("rangeTo");
-  const r = loadRange();
-  rangeFromEl.value = r.from;
-  rangeToEl.value   = r.to;
-
-  function onRangeChange(){
-    let from = parseInt(rangeFromEl.value, 10);
-    let to   = parseInt(rangeToEl.value, 10);
-    if (!Number.isFinite(from)) from = 1;
-    if (!Number.isFinite(to)) to = VOCAB.length;
-
-    from = clamp(from, 1, VOCAB.length);
-    to   = clamp(to,   1, VOCAB.length);
-    if (from > to) [from, to] = [to, from];
-
-    rangeFromEl.value = from;
-    rangeToEl.value   = to;
-
-    saveRange({ from, to });
-
-    const pool = getPoolIndices();
-    const st = freshStateForPool(pool);
-    saveState(st);
-
-    updateWrongCountUI();
-    setUI(st);
-
-    if (wheel.overlay.classList.contains("show")){
-      wheelRender(true);
-    }
-  }
-
-  rangeFromEl.addEventListener("change", onRangeChange);
-  rangeToEl.addEventListener("change", onRangeChange);
-
-  updateWrongCountUI();
-
-  const wrongOnlyToggle = document.getElementById("wrongOnlyToggle");
-  wrongOnlyToggle.checked = loadWrongOnly();
-  wrongOnlyToggle.addEventListener("change", () => {
-    saveWrongOnly(wrongOnlyToggle.checked);
-
-    const pool = getPoolIndices();
-    const st = freshStateForPool(pool);
-    saveState(st);
-
-    updateWrongCountUI();
-    setUI(st);
-
-    if (wheel.overlay.classList.contains("show")){
-      wheelRender(true);
-    }
-  });
-
-  document.getElementById("missToggle").addEventListener("change", (e) => {
-    const st = loadState();
-    if (!st) return;
-    const cur = getCurrentItem(st);
-    if (!cur) return;
-
-    const set = loadWrongSet();
-    if (e.target.checked) set.add(cur.item.en);
-    else set.delete(cur.item.en);
-
-    saveWrongSet(set);
-    updateWrongCountUI();
-
-    if (wheel.overlay.classList.contains("show")){
-      wheelRender(true);
-    }
-  });
-
-  document.getElementById("clearWrongBtn").addEventListener("click", () => {
-    saveWrongSet(new Set());
-    updateWrongCountUI();
-
-    const pool = getPoolIndices();
-    const st = freshStateForPool(pool);
-    saveState(st);
-    setUI(st);
-
-    if (wheel.overlay.classList.contains("show")){
-      wheelRender(true);
-    }
-  });
-
-  const pool = getPoolIndices();
-  let st = loadState();
-  if (!st) st = freshStateForPool(pool);
-  saveState(st);
-  setUI(st);
-
-  document.getElementById("nextBtn").addEventListener("click", nextAction);
-  document.getElementById("resetBtn").addEventListener("click", resetAll);
-
-  document.getElementById("speakBtn").addEventListener("click", () => {
-    const st2 = loadState();
-    if (!st2) return;
-    const cur = getCurrentItem(st2);
-    if (!cur) return;
-    speakEnglish(cur.item.en);
-  });
-
-  document.getElementById("audioToggle").addEventListener("click", () => {
-    const on = loadAudioOn();
-    saveAudioOn(!on);
-    updateAudioUI();
-
-    const st2 = loadState();
-    if (st2 && st2.phase === 0){
-      const cur = getCurrentItem(st2);
-      if (cur) speakEnglish(cur.item.en);
-    }
-  });
-
-  document.getElementById("orderToggle").addEventListener("click", () => {
-    const now = loadOrderMode();
-    const next = (now === "random") ? "asc" : "random";
-    saveOrderMode(next);
-    updateOrderUI();
-
-    const pool2 = getPoolIndices();
-    const st2 = freshStateForPool(pool2);
-    saveState(st2);
-    setUI(st2);
-
-    if (wheel.overlay.classList.contains("show")){
-      wheelRender(true);
-    }
-  });
-
-  /* ===== 🎡 ホイール要素を紐づけ ===== */
-  wheel.overlay = document.getElementById("wheelOverlay");
-  wheel.viewport = document.getElementById("wheelViewport");
-  wheel.list = document.getElementById("wheelList");
-  wheel.search = document.getElementById("wheelSearchInput");
-  wheel.hint = document.getElementById("wheelHint");
-  wheel.btnJump = document.getElementById("wheelJumpBtn");
-  wheel.closeBtn = document.getElementById("wheelCloseBtn");
-  wheel.clearBtn = document.getElementById("wheelClearSearchBtn");
-  wheel.openBtn = document.getElementById("wheelOpenBtn");
-  wheel.moreBtn = document.getElementById("wheelMoreBtn");
-
-  wheel.openBtn.addEventListener("click", wheelOpen);
-  wheel.closeBtn.addEventListener("click", wheelClose);
-  wheel.btnJump.addEventListener("click", wheelJumpToSelected);
-
-  wheel.clearBtn.addEventListener("click", () => {
-    wheel.search.value = "";
-    saveWheelQuery("");
-    wheelRender(true);
-  });
-
-  // 「さらに表示」
-  wheel.moreBtn.addEventListener("click", () => {
-    wheelRender(false);
-  });
-
-  // オーバーレイ背景タップで閉じる
-  wheel.overlay.addEventListener("click", (e) => {
-    if (e.target === wheel.overlay) wheelClose();
-  });
-
-  // 検索：デバウンス（軽量）
-  let t = 0;
-  wheel.search.addEventListener("input", () => {
-    clearTimeout(t);
-    t = setTimeout(() => wheelRender(true), 180);
-  });
-
-  // クリック：イベント委譲（軽量）
-  wheel.list.addEventListener("click", (e) => {
-    const li = e.target.closest(".wheelItem");
-    if (!li) return;
-    const idx = parseInt(li.dataset.index || "0", 10);
-    if (!Number.isFinite(idx)) return;
-
-    // まだ描画されてない先をタップしたケースはない（タップできないので）
-    wheelScrollToIndex(idx, true);
-  });
-
-  // スクロール停止後だけスナップ（軽い）
-  let snapTimer = 0;
-  wheel.viewport.addEventListener("scroll", () => {
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(() => {
-      if (wheel.overlay.classList.contains("show")) wheelSnap();
-    }, 140);
-  }, { passive: true });
-}
-
-init();
+  render();
+})();
 </script>
 </body>
 </html>
