@@ -550,6 +550,14 @@
       row-gap: 6px;
       column-gap: 10px;
     }
+
+    /* ✅ rangeBadge を grid の伸び（stretch）から外して、中身の幅に合わせる */
+    .rangeBadge{
+      justify-self: start;     /* ← これが本命 */
+      width: fit-content;      /* ← 念のため（iOSでも効きやすい） */
+    }
+
+
     .rangeTop{ grid-column: 1 / 3; display: contents; }
     .rangeBadge{ grid-column: 1; }
     #autoBtn{ grid-column: 2; white-space: nowrap; }
