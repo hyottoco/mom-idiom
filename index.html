@@ -2605,22 +2605,22 @@ function sanitizeMs(v, min, max, fallback){
 
 autoEnMsInput.addEventListener("change", () => {
   stopAuto();
-  state.autoEnMs = sanitizeMs(autoEnMsInput.value, 200, 10000, 1000);
+  state.autoEnMs = sanitizeMs(autoEnMsInput.value, 200, 10000, 1500);
   autoEnMsInput.value = String(state.autoEnMs);
   saveState();
 });
 
 autoJaMsInput.addEventListener("change", () => {
   stopAuto();
-  state.autoJaMs = sanitizeMs(autoJaMsInput.value, 200, 20000, 1500);
+  state.autoJaMs = sanitizeMs(autoJaMsInput.value, 200, 20000, 1000);
   autoJaMsInput.value = String(state.autoJaMs);
   saveState();
 });
 
 autoTimeResetBtn.addEventListener("click", () => {
   stopAuto();
-  state.autoEnMs = 1000;
-  state.autoJaMs = 1500;
+  state.autoEnMs = 1500;
+  state.autoJaMs = 1000;
   autoEnMsInput.value = String(state.autoEnMs);
   autoJaMsInput.value = String(state.autoJaMs);
   saveState();
@@ -2893,8 +2893,8 @@ document.addEventListener("keydown", (e) => { if(e.key === "Escape" && wheelOver
   rateLabel.textContent = `${state.rate.toFixed(1)}x`;
 
   // ✅ Auto時間の補正
-  state.autoEnMs = clamp(Number(state.autoEnMs) || 1000, 200, 10000);
-  state.autoJaMs = clamp(Number(state.autoJaMs) || 1500, 200, 20000);
+  state.autoEnMs = clamp(Number(state.autoEnMs) || 1500, 200, 10000);
+  state.autoJaMs = clamp(Number(state.autoJaMs) || 1000, 200, 20000);
 
   if(!Array.isArray(state.shuffled) || state.shuffled.length === 0){
     buildOrder();
