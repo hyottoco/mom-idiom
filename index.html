@@ -2717,17 +2717,27 @@ function renderWheelItems(){
 }
 function rebuildWheelList(){
   const q = (wheelSearchInput.value || "").trim();
-  wheelFiltered = VOCAB.map((v, i) => ({...v, i})).filter(v => wheelMatch(q, v));
+
+  // ✅ 範囲内だけを検索対象にする
+  const candidates = wheelCandidateIndices();
+
+  wheelFiltered = candidates
+    .map(i => ({ ...VOCAB[i], i }))    // i は元VOCABの実index
+    .filter(v => wheelMatch(q, v));
+
   wheelShown = wheelFiltered.length;
   wheelActiveIndex = 0;
+
   renderWheelItems();
   updateWheelHint();
   wheelViewport.scrollTop = 0;
+
   requestAnimationFrame(() => {
     wheelActiveIndex = 0;
     wheelScrollToIndex(0, false);
   });
 }
+
 function openWheel(){
   stopAuto();
   wheelOverlay.classList.add("show");
@@ -2755,20 +2765,28 @@ function wheelJumpToSelected(){
   if(!picked) return;
 
   const pos = state.shuffled.indexOf(picked.i);
-  if(pos >= 0){
-    state.idx = pos;
-  }else{
-    state.wrongOnly = false;
-    wrongOnlyToggle.checked = false;
-    buildOrder();
-    const pos2 = state.shuffled.indexOf(picked.i);
-    state.idx = Math.max(0, pos2);
+  if(pos < 0){
+    // ✅ ここに来るなら「ホイールが範囲外を出している」など想定外
+    wheelHint.textContent = "この単語は現在の範囲にありません（範囲を広げてください）";
+    return;
   }
 
+  state.idx = pos;
   state.started = true;
   state.phase = 0;
   render();
   closeWheel();
+}
+function wheelCandidateIndices(){
+  // 現在の「No 〜」範囲だけを候補にする
+  const base = inRangeIndices();
+
+  // もし「復習」ON中なら、復習対象だけに絞りたいならこれも有効
+  // （好みで。復習中でも通常検索したいなら削除）
+  if(state.wrongOnly){
+    return base.filter(i => state.wrongSet[i]);
+  }
+  return base;
 }
 
 /* =========================
