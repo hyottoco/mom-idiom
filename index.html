@@ -342,6 +342,8 @@
       background: transparent;
       user-select:none;
       min-width: 20px;
+      width: fit-content;
+      flex: 0 0 auto;   /* 念のため（伸び抑制） */
     }
     body.dark .speedBox{
       border-color: var(--bd-dark);
@@ -349,7 +351,7 @@
       color: #d6d6d8;
     }
     .speedBox input[type="range"]{
-      width: 60px;
+      width: 48px;
       display: block;
       margin: 0;
     }
