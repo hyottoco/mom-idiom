@@ -2158,7 +2158,8 @@ const wheelHint = $("wheelHint");
 /* =========================
    状態（phase方式）
 ========================= */
-const APP_KEY = "ei_idiom_state_v3";
+const APP_ID  = (document.title || "vocab").replace(/\s+/g, "_");
+const APP_KEY = `ei_idiom_state_v3__${APP_ID}`;
 
 const state = {
   idx: 0,
@@ -2182,6 +2183,9 @@ const state = {
   /* ✅ Auto表示時間（ms） */
   autoEnMs: 1500,
   autoJaMs: 1000,
+
+  vocabLen: VOCAB.length,
+
 };
 
 function loadState(){
@@ -2206,6 +2210,22 @@ function loadState(){
 
   if(typeof saved.autoEnMs === "number") state.autoEnMs = saved.autoEnMs;
   if(typeof saved.autoJaMs === "number") state.autoJaMs = saved.autoJaMs;
+
+    // ✅ 語数が違うアプリ/更新なら、範囲や順番を安全に初期化
+  if (typeof saved.vocabLen === "number" && saved.vocabLen !== VOCAB.length) {
+    state.idx = 0;
+    state.started = false;
+    state.phase = 0;
+    state.wrongSet = {};
+    state.wrongOnly = false;
+    state.rangeFrom = 1;
+    state.rangeTo = VOCAB.length;   // ← 起動時は 1〜総数 にしたいならこれ
+    state.shuffled = [];
+  }
+
+  // 現在の語数を記録
+  state.vocabLen = VOCAB.length;
+
 }
 function saveState(){ LS.set(APP_KEY, state); }
 
