@@ -105,6 +105,8 @@
       /* ✅ 縦の隙間を詰める */
       padding-top: 6px;
       padding-bottom: 6px;
+      padding-left: 8px;
+      padding-right: 8px;   /* ← ここを小さく */
     }
 
     .pill{ cursor: pointer; }
@@ -1125,36 +1127,48 @@ function clearWrong(){
   render();
 }
 
-function applyRangeFromInputs(){
+function applyFromInput(){
   stopAuto();
 
   let from = Number(rangeFrom.value || 1);
   let to   = Number(rangeTo.value   || 1);
 
-  // 全体範囲でクランプ
   from = clamp(from, 1, VOCAB.length);
-  to   = clamp(to,   1, VOCAB.length);
 
-  // ❗ 逆転を禁止（UI側で修正）
-  if(from > to){
-    from = to;
-  }
+  // ✅ 〇は □ を超えられない
+  if(from > to) from = to;
 
-  // stateに反映
   state.rangeFrom = from;
-  state.rangeTo   = to;
+  rangeFrom.value = String(from);
 
-  // 🔒 入力制限を動的に更新
-  rangeFrom.max = String(state.rangeTo);     // 〇は□以下まで
-  rangeTo.min   = String(state.rangeFrom);   // □は〇以上から
-
-  // 並び順再構築
   buildOrder();
   state.idx = 0;
   state.started = false;
   state.phase = 0;
   render();
 }
+
+function applyToInput(){
+  stopAuto();
+
+  let from = Number(rangeFrom.value || 1);
+  let to   = Number(rangeTo.value   || 1);
+
+  to = clamp(to, 1, VOCAB.length);
+
+  // ✅ □ は 〇 未満にできない
+  if(to < from) to = from;
+
+  state.rangeTo = to;
+  rangeTo.value = String(to);
+
+  buildOrder();
+  state.idx = 0;
+  state.started = false;
+  state.phase = 0;
+  render();
+}
+
 
 
 /* =========================
@@ -1458,8 +1472,9 @@ orderToggle.addEventListener("click", () => {
   render();
 });
 
-rangeFrom.addEventListener("change", applyRangeFromInputs);
-rangeTo.addEventListener("change", applyRangeFromInputs);
+// ======== イベント ========
+rangeFrom.addEventListener("change", applyFromInput);
+rangeTo.addEventListener("change", applyToInput);
 
 rateRange.addEventListener("input", () => {
   state.rate = Number(rateRange.value);
