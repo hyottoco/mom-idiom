@@ -522,9 +522,10 @@
 
     /* ✅ WakeLock状態表示（小さく） */
     .wakeBadge{
-      position:absolute;
-      right: 10px;
-      bottom: 10px;
+      position: fixed;                 /* ← 画面に固定 */
+      top: calc(env(safe-area-inset-top) + 8px); /* ← iPhoneノッチ対策 */
+      right: 8px;                      /* ← 右端 */
+      bottom: auto;                    /* ← 下固定を解除 */
       font-size: 11px;
       padding: 6px 10px;
       border-radius: 999px;
@@ -533,7 +534,9 @@
       color: inherit;
       user-select:none;
       display:none;
+      z-index: 99999;                  /* ← 最前面に */
     }
+
     body.dark .wakeBadge{
       border-color: var(--bd-dark);
       background: rgba(0,0,0,0.25);
@@ -659,14 +662,14 @@
     <!-- ✅ 探すボタンの下段：time（1行に収める） -->
     <div class="row autoTimeRow">
       <div class="badge autoTimeBadge">
-        ▶︎ms:
+        ▶︎ 
         <span class="miniLbl">英</span>
         <input id="autoEnMs" class="msInput" type="number" min="200" max="9999" step="100">
-        <!-- <span class="unit">ms</span> -->
+        <span class="unit">ms</span>
         <span class="unit">:</span>
         <span class="miniLbl">日</span>
         <input id="autoJaMs" class="msInput" type="number" min="200" max="9999" step="100">
-        <!-- <span class="unit">ms</span> -->
+        <span class="unit">ms</span>
       </div>
 
       <button class="small miniBtn reviewUI pressWhite" id="autoTimeResetBtn" type="button">初期値</button>
@@ -2078,7 +2081,6 @@ const VOCAB = [
   { en: "yearn for ～", ja: "～を切望する" },
   { en: "yield to ～", ja: "～に屈伏する" },
 ];
-
 /* =========================
    ユーティリティ
 ========================= */
@@ -2178,8 +2180,8 @@ const state = {
   autoOn: false, // ✅ Auto運転中か
 
   /* ✅ Auto表示時間（ms） */
-  autoEnMs: 1000,
-  autoJaMs: 1500,
+  autoEnMs: 1500,
+  autoJaMs: 1000,
 };
 
 function loadState(){
